@@ -106,8 +106,7 @@ def screenshot(which, path):
     try:
         image = Image.open(path)
         image.load()
-    except (OSError, SyntaxError) as e:
-        # PNG chunk errors can surface as SyntaxError after the header was accepted.
+    except OSError as e:
         if image is not None:
             image.close()   # the file is open; a refusal should not leave the handle for the GC
         raise ValueError(f"cannot read the {which} screenshot {path}: {e}. Nothing was compared.")

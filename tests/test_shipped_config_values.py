@@ -76,8 +76,7 @@ COLOUR = re.compile(r"#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?")
 SENTINEL_FLOOR = {"lunar_utc_offset": -1}
 
 sys.path.insert(0, str(ROOT / "tools"))
-import manage  # noqa: E402
-import tables  # noqa: E402  the one Markdown-table reader in the repo, which manage.py imports
+import manage  # noqa: E402  the same table reader tools/manage.py set judges a value against
 
 
 def readers(java_text):
@@ -158,18 +157,17 @@ def config_files(root=None):
 def table_ranges(text=None):
     """key -> (low, high) for every Keys-table row whose type cell is a range, such as '0 to 300'.
 
-    Read the way tools/manage.py set reads it - tools/tables.table_rows over the section,
-    tools/tables.plain to drop the code marks, manage.declared_range for the cell - so a cell this
-    test understands and set does not (or the other way round) cannot happen either. A row's first
-    cell can name two keys, and one of them may also be named in the Meaning column: only the first
-    cell is a definition.
+    Read the way tools/manage.py set reads it - manage.table_rows over the section, manage.plain to
+    drop the code marks, manage.declared_range for the cell - so a cell this test understands and set
+    does not (or the other way round) cannot happen either. A row's first cell can name two keys, and
+    one of them may also be named in the Meaning column: only the first cell is a definition.
     """
     text = KEYS_TABLE.read_text(encoding="utf-8") if text is None else text
     if "## Keys" not in text:
         raise AssertionError("themes/README.md has no ## Keys section")
     out = {}
-    for row in tables.table_rows(text[text.index("## Keys"):], "| Key |"):
-        low, high = manage.declared_range(tables.plain(row[1]) if len(row) > 1 else "")
+    for row in manage.table_rows(text[text.index("## Keys"):], "| Key |"):
+        low, high = manage.declared_range(manage.plain(row[1]) if len(row) > 1 else "")
         if low is None:
             continue
         for key in re.findall(r"`([a-z_]+)`", row[0]):
@@ -216,7 +214,8 @@ class ShippedConfigValuesTest(unittest.TestCase):
     def test_the_enum_values_are_read_out_of_the_launcher(self):
         # A constant parse that found nothing would let every value through, the way it did for "off".
         self.assertEqual(self.enums.get("glow_style"), ({"radial", "horizon"}, "trimmed"))
-        self.assertEqual(self.enums.get("glass_style"), ({"glass", "rim", "halo"}, "trimmed"))
+        self.assertEqual(self.enums.get("glass_style"),
+                         ({"glass", "rim", "halo", "green-glass", "green-rim", "green-halo"}, "trimmed"))
         self.assertEqual(self.enums.get("wallpaper_order"), ({"sequential", "shuffle"}, "exact"))
 
     def test_a_value_outside_the_set_is_reported(self):
@@ -224,7 +223,7 @@ class ShippedConfigValuesTest(unittest.TestCase):
         # glowStyle() answered radial. The spelling is the reader's - glow and glass trim and ignore
         # case, validOrder() does not, so `Sequential` is not `sequential`.
         for key, value, listed in (("glow_style", "off", "horizon, radial"),
-                                   ("glass_style", "frosted", "glass, halo, rim"),
+                                   ("glass_style", "frosted", "glass, green-glass, green-halo, green-rim, halo, rim"),
                                    ("wallpaper_order", "Sequential", "sequential, shuffle")):
             with self.subTest(key=key, value=value):
                 reported = dict(problems({key: value}, self.kinds, self.enums))

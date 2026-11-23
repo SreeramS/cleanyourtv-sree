@@ -29,6 +29,9 @@ public class GlassView extends View {
     /** glass_style rim or halo: no sheen and no fill, only the crisp rim (and, for halo, a lighter outer glow). */
     private boolean flat;
     private boolean halo;
+    /** glass_style green-glass, green-rim or green-halo: the same look with a green rim, glow and (glass) fill. */
+    private boolean green;
+    private static final int GREEN_RGB = 0x34C759;
 
     public GlassView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -47,9 +50,9 @@ public class GlassView extends View {
     /** Tints the rim and the outer glow; 0 restores the plain white glass. */
     void setAccent(int argb) {
         if (argb == 0) {
-            glowRgb = 0xFFFFFF;
-            glowAlpha = 0x30;
-            rim.setColor(0xCCFFFFFF);
+            glowRgb = green ? GREEN_RGB : 0xFFFFFF;
+            glowAlpha = green ? 0x60 : 0x30;
+            rim.setColor(green ? 0xE6000000 | GREEN_RGB : 0xCCFFFFFF);
         } else {
             glowRgb = argb & 0xFFFFFF;
             glowAlpha = 0x70;
@@ -63,9 +66,14 @@ public class GlassView extends View {
 
     /** One of Config's GLASS_* styles. */
     void setStyle(String style) {
-        flat = Config.GLASS_RIM.equals(style) || Config.GLASS_HALO.equals(style);
-        halo = Config.GLASS_HALO.equals(style);
+        green = Config.GLASS_GREEN.equals(style) || Config.GLASS_GREEN_RIM.equals(style)
+                || Config.GLASS_GREEN_HALO.equals(style);
+        flat = Config.GLASS_RIM.equals(style) || Config.GLASS_HALO.equals(style)
+                || Config.GLASS_GREEN_RIM.equals(style) || Config.GLASS_GREEN_HALO.equals(style);
+        halo = Config.GLASS_HALO.equals(style) || Config.GLASS_GREEN_HALO.equals(style);
         rim.setStrokeWidth((flat ? 2f : 1.5f) * density);
+        setAccent(0);   // the plain colours of this style (white, or green); a festive accent is set again after
+        if (getWidth() > 0) updateFill(getHeight());
         invalidate();
     }
 
@@ -77,7 +85,13 @@ public class GlassView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        fill.setShader(new LinearGradient(0, 0, 0, h, 0x3DFFFFFF, 0x12FFFFFF, Shader.TileMode.CLAMP));
+        updateFill(h);
+    }
+
+    /** The slab's fill: clear white glass, or lightly green-tinted glass for green-glass. */
+    private void updateFill(int h) {
+        int rgb = green ? GREEN_RGB : 0xFFFFFF;
+        fill.setShader(new LinearGradient(0, 0, 0, h, 0x3D000000 | rgb, 0x12000000 | rgb, Shader.TileMode.CLAMP));
         specular.setShader(new LinearGradient(0, 0, 0, h * 0.45f, 0x66FFFFFF, 0x00FFFFFF, Shader.TileMode.CLAMP));
     }
 

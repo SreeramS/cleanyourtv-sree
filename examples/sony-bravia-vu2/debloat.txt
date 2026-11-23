@@ -57,6 +57,9 @@
 #   the authorisations revoked, tools/adb-closed.py reported 5555 refused after a reboot.
 # - Remote: Home, Input, Netflix, YouTube, Prime Video, the Settings gear and the mic work with no key
 #   helper, and a held Volume + still ramps. The TV boots straight into launcher/, not Live TV.
+# - Power: the tuner's Automatic Service Update opens its Digital Channel Setup screen at every power-off, and a
+#   quick power-on used to leave launcher/ blank (no tiles, glass or name; docs/TROUBLESHOOTING.md). Fixed in the
+#   launcher on a third unit (2026-11-17, same build): checked with quick power cycles, app round trips and a restart.
 # - Status: applied 2026-10-31 on one TV in four batches with a screenshot after each, and rebooted
 #   once with every entry still disabled. Not yet lived with for several days.
 

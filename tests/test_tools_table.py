@@ -39,10 +39,8 @@ PICTURE_FILE = "picture_file.py"        # the staged write the three above share
 SCENES_WALLPAPERS = "scenes_wallpapers.py"   # themes/scenes/wallpapers, linked from themes/README.md
 BLOCKY_WALLPAPERS = "blocky_wallpapers.py"   # themes/blocky/wallpapers, linked from themes/README.md
 GEN_TABLES = "gen_tables.py"            # the TV tables, from examples/*/tv.json
-TABLES = "tables.py"                    # the one Markdown-table parser, a library module
-
 NOT_IN_TABLE = {README_STATS, README_FEATURED, README_CARD, PICTURE_FILE, SCENES_WALLPAPERS,
-                BLOCKY_WALLPAPERS, GEN_TABLES, TABLES}
+                BLOCKY_WALLPAPERS, GEN_TABLES}
 
 
 def table_rows(text):

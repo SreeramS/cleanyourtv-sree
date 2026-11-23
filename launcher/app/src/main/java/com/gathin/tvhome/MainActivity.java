@@ -334,6 +334,84 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private PopupWindow openPopup;
     /** Reorder mode is on (top-bar button). */
     private boolean reordering;
+    /**
+     * Repairs a Home that came back without its tiles, highlight or name. Seen on a Sony BRAVIA VU2 (Realtek,
+     * Android 14): its tuner (com.realtek.dtv ASUService) opens its channel setup at every power-off, so a quick
+     * power-on restarts and resumes Home while its window is still invisible behind that screen. The refocus in
+     * reloadApps then finds no laid-out tile, the entrance animation never gets a frame, and nothing retries.
+     * Worse, the process can miss the display's ON event in that quick off-and-on: every ViewRootImpl in it then
+     * still believes the display is off and skips each draw (dumpsys activity top shows
+     * mLastPerformDrawFailedReason=screen_off with the window focused and visible; no frames, not even the clock).
+     * The stale state is the process's, so recreate() does not help and a new process does. So first check that
+     * Home draws at all, and restart the process (Android relaunches the top Home at once) if it does not.
+     * Run once Home has had window focus for a moment, and after the screen turns on: only a stuck state is touched.
+     */
+    private final Runnable repairIfStuck = this::checkDrawing;
+    private final Runnable verifyDrawing = this::verifyDrawingNow;
+    /** Set by drawWatch when the window really draws a frame. */
+    private boolean drewSinceCheck;
+    private final ViewTreeObserver.OnDrawListener drawWatch = () -> drewSinceCheck = true;
+    private final BroadcastReceiver screenOnReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            root.removeCallbacks(repairIfStuck);
+            root.postDelayed(repairIfStuck, 1000);
+        }
+    };
+
+    private void checkDrawing() {
+        if (!resumed || !hasWindowFocus()) return;
+        drewSinceCheck = false;
+        root.invalidate();
+        root.removeCallbacks(verifyDrawing);
+        root.postDelayed(verifyDrawing, 600);
+    }
+
+    private void verifyDrawingNow() {
+        if (!resumed || !hasWindowFocus()) return;
+        if (!drewSinceCheck) {
+            // Ask the power service, not this process's Display: that cached state is the one gone stale.
+            android.os.PowerManager pm = getSystemService(android.os.PowerManager.class);
+            android.content.SharedPreferences prefs = getSharedPreferences("draw_watch", MODE_PRIVATE);
+            long now = android.os.SystemClock.elapsedRealtime();
+            long last = prefs.getLong("restart_at", 0);
+            // elapsedRealtime restarts at boot: a stored time ahead of now is from before it.
+            boolean recently = last != 0 && last <= now && now - last < 60_000;
+            if (pm != null && pm.isInteractive() && !recently) {
+                android.util.Log.w("TvHome", "Home drew nothing with the screen on; restarting the launcher process");
+                prefs.edit().putLong("restart_at", now).commit();   // commit: the process ends on the next line
+                android.os.Process.killProcess(android.os.Process.myPid());
+                return;
+            }
+            android.util.Log.w("TvHome", "Home drew nothing; interactive=" + (pm != null && pm.isInteractive())
+                    + " recentRestart=" + recently);
+        }
+        repairIfStuckNow();
+    }
+
+    private void repairIfStuckNow() {
+        if (!resumed || !hasWindowFocus() || reordering || appLibrary != null || openPopup != null
+                || adapter.appCount() == 0) return;
+        boolean tilesStuck = false;
+        for (int i = 0; i < grid.getChildCount(); i++) {
+            android.view.animation.Animation a = grid.getChildAt(i).getAnimation();
+            if (a != null && !a.hasEnded()) {
+                tilesStuck = true;
+                break;
+            }
+        }
+        View focused = getCurrentFocus();
+        boolean onTile = focused != null && focused.getId() == R.id.card;
+        boolean stuck = tilesStuck || focused == null || (onTile && !glassShown)
+                || (glassShown && glass.getAlpha() < 0.99f) || (heroShown && hero.getAlpha() < 0.99f);
+        if (!stuck) return;
+        android.util.Log.i("TvHome", "repairing Home: tiles=" + tilesStuck + " focus=" + (focused != null)
+                + " glass=" + glassShown + "/" + glass.getAlpha() + " hero=" + heroShown + "/" + hero.getAlpha());
+        for (int i = 0; i < grid.getChildCount(); i++) grid.getChildAt(i).clearAnimation();
+        grid.invalidate();
+        // The same tiles: focus goes back to the last tile and the glass, name and glow fade in, with no entrance.
+        reloadApps(true, false, false);
+    }
     /** Key of the tile being carried in reorder mode, or null. */
     private String movingKey;
     /** Tile order when reorder mode started, to save only when something moved. */
@@ -751,18 +829,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             grid.post(this::refitGlass);
         });
 
-        // The wallpaper caption sits on the screen, not in the grid: fade it while the grid is scrolled away from
-        // the dock, so its text never lies over the tiles.
-        final int captionScrollSlop = Math.round(12 * density);
-        grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
-                if (wallpaperPlayer == null) return;
-                wallpaperPlayer.scrolledAway(rv.canScrollVertically(-1)
-                        && rv.computeVerticalScrollOffset() > captionScrollSlop);
-            }
-        });
-
         // Keep the glass glued to its tile while the grid scrolls.
         grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -947,6 +1013,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         // Hide the glass when focus leaves the tiles.
         // Taken off in onDestroy: recreate() keeps the window, and a listener left on it held every earlier Home.
         getWindow().getDecorView().getViewTreeObserver().addOnGlobalFocusChangeListener(glassFocusListener);
+        getWindow().getDecorView().getViewTreeObserver().addOnDrawListener(drawWatch);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
+        }
 
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -1319,6 +1391,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     protected void onPause() {
         super.onPause();
         resumed = false;
+        root.removeCallbacks(repairIfStuck);
+        root.removeCallbacks(verifyDrawing);
         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
         // Only Home's own share is dropped: a key service that saw the same DOWN keeps its hold.
         RemoteKeys.release(this);
@@ -1381,6 +1455,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
+            root.removeCallbacks(repairIfStuck);
+            root.postDelayed(repairIfStuck, 700);
             startPendingSettingsReorder();
             if (libraryFocusPending && appLibrary == null) focusLibrary();
             showCardPrompt();
@@ -1400,6 +1476,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         super.onDestroy();
         ViewTreeObserver tree = getWindow().getDecorView().getViewTreeObserver();
         if (tree.isAlive()) tree.removeOnGlobalFocusChangeListener(glassFocusListener);
+        if (tree.isAlive()) tree.removeOnDrawListener(drawWatch);
+        unregisterReceiver(screenOnReceiver);
+        root.removeCallbacks(repairIfStuck);
+        root.removeCallbacks(verifyDrawing);
         RemoteKeys.release(this);
         cancelHoldOk();
         if (gameDay != null) gameDay.shutdown();
@@ -1450,8 +1530,6 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      */
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        // A real key, not onUserInteraction: that also runs when the firmware starts Live TV over Home at power-on.
-        if (event.getAction() == KeyEvent.ACTION_DOWN) HomeKeyService.keyOnHome();
         if (homeIgnoreChannelKeys && RemoteKeys.isChannelKey(event.getKeyCode())) return true;
         // Vendor keys (TCL Netflix button, 4062) never reach the key services, only the focused window, so their
         // "hold:" entries run here too or nowhere. Only while resumed: onPause releases Home's holds, and a DOWN

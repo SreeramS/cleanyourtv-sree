@@ -20,6 +20,13 @@ public class GlassStyleTest {
     }
 
     @Test
+    public void greenStylesByNameAnyCase() {
+        assertEquals(Config.GLASS_GREEN, Config.glassStyle("green-glass"));
+        assertEquals(Config.GLASS_GREEN_RIM, Config.glassStyle(" Green-Rim "));
+        assertEquals(Config.GLASS_GREEN_HALO, Config.glassStyle("GREEN-HALO"));
+    }
+
+    @Test
     public void anythingElseIsGlass() {
         assertEquals(Config.GLASS_DEFAULT, Config.glassStyle("glass"));
         assertEquals(Config.GLASS_DEFAULT, Config.glassStyle(""));
