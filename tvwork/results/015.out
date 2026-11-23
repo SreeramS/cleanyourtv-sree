@@ -1,0 +1,28 @@
+recorded 7 packages on 192.168.29.174 (0 already disabled, left alone by undo) -> /Users/sreerams/.cleanyourtv/recovery-192.168.29.174-bfb03c06.json
+HOME before: com.google.android.tvlauncher/.MainActivity
+undo with tools/restore.sh <same list>; keep this file, it is the only copy.
+$ pm disable-user --user 0 com.google.android.syncadapters.calendar
+Package com.google.android.syncadapters.calendar new state: disabled-user
+$ pm disable-user --user 0 com.android.providers.calendar
+Package com.android.providers.calendar new state: disabled-user
+$ pm disable-user --user 0 com.android.printspooler
+Package com.android.printspooler new state: disabled-user
+$ pm disable-user --user 0 com.android.camera2
+Package com.android.camera2 new state: disabled-user
+$ pm disable-user --user 0 com.android.gallery3d
+Package com.android.gallery3d new state: disabled-user
+$ pm disable-user --user 0 com.android.wallpaper.livepicker
+Package com.android.wallpaper.livepicker new state: disabled-user
+$ pm list packages -d
+package:com.google.android.syncadapters.calendar
+package:com.google.android.partnersetup
+package:com.android.providers.calendar
+package:com.sony.dtv.multiscreendemo
+package:com.google.android.onetimeinitializer
+package:com.google.android.feedback
+package:com.sony.dtv.ecodashboard
+package:com.android.printspooler
+package:com.android.wallpaper.livepicker
+package:com.android.gallery3d
+package:com.sony.dtv.b2b.vendorprotocol
+package:com.android.camera2

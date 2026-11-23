@@ -1,0 +1,19 @@
+--------- beginning of main
+11-17 20:04:50.184 I/TvHome  ( 1854): repairing Home: tiles=false focus=true glass=true/0.0 hero=true/0.0
+---
+11-17 20:03:50.503 I/boot_progress_start(  489): 8415
+11-17 20:04:07.984 I/screen_toggled(  836): 1
+11-17 20:04:14.526 I/am_proc_start(  836): [0,1854,10042,com.gathin.tvhome,top-activity,{com.gathin.tvhome/com.gathin.tvhome.MainActivity}]
+11-17 20:04:39.893 I/power_sleep_requested(  836): 0
+11-17 20:04:42.262 I/screen_toggled(  836): 0
+11-17 20:04:43.711 I/screen_toggled(  836): 1
+11-17 20:04:53.688 I/power_sleep_requested(  836): 0
+11-17 20:04:54.530 I/screen_toggled(  836): 0
+11-17 20:04:54.621 I/screen_toggled(  836): 1
+11-17 20:04:55.450 I/power_sleep_requested(  836): 0
+11-17 20:04:56.843 I/screen_toggled(  836): 0
+11-17 20:04:58.021 I/screen_toggled(  836): 1
+Total frames rendered: 1207
+Failed to write while dumping service gfxinfo: Broken pipe
+    lastUpdateTime=2026-11-17 20:01:42
+Failed to write while dumping service package: Broken pipe

@@ -1,0 +1,8 @@
+# Sony BRAVIA VU2, Android 14 - batch 2: unused system apps
+# Undo: TV_HOST=<tv ip> tools/restore.sh ../tvwork/lists/2-unused-system.txt
+com.google.android.syncadapters.calendar # calendar sync
+com.android.providers.calendar           # calendar storage (allowed provider)
+com.android.printspooler                 # printing
+com.android.camera2                      # camera app; the set has no camera
+com.android.gallery3d                    # legacy photo viewer
+com.android.wallpaper.livepicker         # live wallpaper picker

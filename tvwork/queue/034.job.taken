@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "settings get secure screensaver_components; dumpsys package com.gathin.tvhome | grep -m2 ClockDream"], "timeout": 30}

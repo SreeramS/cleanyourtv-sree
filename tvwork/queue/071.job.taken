@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys power | grep -m1 mWakefulness=; logcat -b events -d | grep -E \"wm_set_resumed|screen_toggled\" | tail -5"], "timeout": 60}

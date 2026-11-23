@@ -1,0 +1,34 @@
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at android.os.Handler.dispatchMessage(Handler.java:106)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at android.os.Looper.loopOnce(Looper.java:205)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at android.os.Looper.loop(Looper.java:294)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at android.app.ActivityThread.main(ActivityThread.java:8177)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at java.lang.reflect.Method.invoke(Native Method)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:552)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:974)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): Caused by: android.system.ErrnoException: write failed: EPIPE (Broken pipe)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at libcore.io.Linux.writeBytes(Native Method)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at libcore.io.Linux.write(Linux.java:296)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at libcore.io.ForwardingOs.write(ForwardingOs.java:943)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at libcore.io.BlockGuardOs.write(BlockGuardOs.java:448)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at libcore.io.ForwardingOs.write(ForwardingOs.java:943)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	at libcore.io.IoBridge.write(IoBridge.java:646)
+11-17 19:59:12.231 W/FastPrintWriter( 3470): 	... 16 more
+---
+grep: Unknown option '-PROFILEDATA---' (see "grep --help")
+Failed to write while dumping service gfxinfo: Broken pipe
+VsyncSchedule for pacesetter 0:
+hwVsyncState=Disabled
+pendingHwVsyncState=Disabled
+
+VsyncController:
+VsyncReactor in use
+Has 0 unfired fences
+mInternalIgnoreFences=0 mExternalIgnoreFences=0
+mMoreSamplesNeeded=0 mPeriodConfirmationInProgress=0
+mPeriodTransitioningTo=nullptr
+         present offset:         0 ns	        VSYNC period:  16666666 ns
+app: state=Idle VSyncState={displayId=0, count=19687}
+mWorkDuration=16.67 mReadyDuration=15.67 last vsync time -19667.85ms relative to now
+    Connection{0xa99c0210, VSyncRequest::None}
+    Connection{0xa99c0890, VSyncRequest::None}
+Failed to write while dumping service SurfaceFlinger: Broken pipe

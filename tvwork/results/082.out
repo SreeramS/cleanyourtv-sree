@@ -1,0 +1,19 @@
+ PID USER         PR  NI VIRT  RES  SHR S[%CPU] %MEM     TIME+ ARGS
+1852 u0_a42       10 -10 0.9G 129M  97M S  0.0   6.2   0:01.40 com.gathin.tvhome
+S 63 18
+S 63 18
+      WaitQueue: <empty>
+      WaitQueue: <empty>
+      WaitQueue: <empty>
+11-17 19:51:44.582 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~cfNjfNGRcMqhQIadfSWJnA==/com.sonyliv--rsc_unQ8lpeoArnwY7okQ==/split_config.armeabi_v7a.apk' with 1 weak references
+11-17 19:51:44.582 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~cfNjfNGRcMqhQIadfSWJnA==/com.sonyliv--rsc_unQ8lpeoArnwY7okQ==/split_config.en.apk' with 1 weak references
+11-17 19:51:44.582 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~cfNjfNGRcMqhQIadfSWJnA==/com.sonyliv--rsc_unQ8lpeoArnwY7okQ==/split_config.xhdpi.apk' with 1 weak references
+11-17 19:51:44.582 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~GzMPStwiFroeZV4lbQcwJw==/com.spotify.tv.android-uPZdxEVDMiRL85ZWvGReJw==/base.apk' with 1 weak references
+11-17 19:51:44.582 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~GzMPStwiFroeZV4lbQcwJw==/com.spotify.tv.android-uPZdxEVDMiRL85ZWvGReJw==/split_config.armeabi_v7a.apk' with 1 weak references
+11-17 19:51:44.582 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~GzMPStwiFroeZV4lbQcwJw==/com.spotify.tv.android-uPZdxEVDMiRL85ZWvGReJw==/split_config.en.apk' with 1 weak references
+11-17 19:51:44.583 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~GzMPStwiFroeZV4lbQcwJw==/com.spotify.tv.android-uPZdxEVDMiRL85ZWvGReJw==/split_config.xhdpi.apk' with 1 weak references
+11-17 19:51:44.584 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~nHxhvXftpSmsw3JNWeZ9rA==/in.startv.hotstar-y57e5BhMrwaX-4a_kqdJ1A==/base.apk' with 1 weak references
+11-17 19:51:44.584 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~nHxhvXftpSmsw3JNWeZ9rA==/in.startv.hotstar-y57e5BhMrwaX-4a_kqdJ1A==/split_config.armeabi_v7a.apk' with 1 weak references
+11-17 19:51:44.584 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~nHxhvXftpSmsw3JNWeZ9rA==/in.startv.hotstar-y57e5BhMrwaX-4a_kqdJ1A==/split_config.en.apk' with 1 weak references
+11-17 19:51:44.584 W/m.gathin.tvhome( 1852): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~nHxhvXftpSmsw3JNWeZ9rA==/in.startv.hotstar-y57e5BhMrwaX-4a_kqdJ1A==/split_config.xhdpi.apk' with 1 weak references
+11-17 19:51:52.352 W/ProcessStats(  828): Tracking association SourceState{423fe9e com.android.vending/10060 ImpBg #4533} whose proc state 6 is better than process ProcessState{8046529 com.android.vending:background/10060 pkg=com.android.vending} proc state 14 (14 skipped)

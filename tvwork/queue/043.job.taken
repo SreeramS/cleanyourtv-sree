@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME | tail -1; logcat -b events -d | grep wm_set_resumed_activity | head -5; settings get global private_dns_mode; wm size; wm density"], "timeout": 60}

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys power | grep -m3 -E \"mWakefulness|Display Power\"; dumpsys window | grep -m3 -E \"mCurrentFocus|mFocusedApp\"; dumpsys activity activities | grep -m3 -E \"ResumedActivity\"; logcat -b events -d | grep -E \"wm_set_resumed_activity|am_crash|am_anr|am_proc_died.*gathin|screen_toggled\" | tail -15; logcat -d -b crash | tail -20"], "timeout": 60}

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys window | grep -m1 mCurrentFocus; dumpsys activity top | grep -A300 \"ACTIVITY com.gathin.tvhome\" | grep -E \" F|glass|hero|app:id/card .*F\" | grep -E \"\\.F|FOCUSED|isFocused| F\" | head -8; dumpsys activity top | grep -A300 \"ACTIVITY com.gathin.tvhome\" | grep -E \"app:id/(glass|hero|ambient|btnSettings|btnInputs|btnWifi)\" | head"], "timeout": 60}

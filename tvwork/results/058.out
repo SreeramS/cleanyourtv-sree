@@ -1,0 +1,40 @@
+    View Hierarchy:
+              android.widget.ImageView{726f29c G.ED..... ......ID 0,0-0,0 #7f090057 app:id/heroArt}
+                  androidx.recyclerview.widget.RecyclerView{5198a1b VFED..... ......ID 0,0-1696,846 #7f090055 app:id/grid}
+                      android.widget.FrameLayout{fd637b8 VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card aid=1073741852}
+                        android.widget.ImageView{37ff991 V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{2ada0f6 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{6199dcd VFE...CL. ......ID 26,16-305,173 #7f090038 app:id/card aid=1073741855}
+                        android.widget.ImageView{8ad682 V.ED..... ........ 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{3052193 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{313d8ce VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card aid=1073741856}
+                        android.widget.ImageView{8d643ef V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{5c7eefc G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{1ed300b VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card aid=1073741857}
+                        android.widget.ImageView{a22fee8 V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{a016901 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{89d2194 VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card aid=1073741858}
+                        android.widget.ImageView{79a943d V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{a29e432 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{34a0b5b VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card aid=1073741853}
+                        android.widget.ImageView{6a13739 V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{8e117e G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{da57cd1 VFE...CL. ......ID 26,16-305,173 #7f090038 app:id/card aid=1073741859}
+                        android.widget.ImageView{2630f2c V.ED..... ........ 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{ad50df5 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{8140237 VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card}
+                        android.widget.ImageView{eae31fb V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{687f218 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{234150d VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card}
+                        android.widget.ImageView{c70d256 V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{a3f2d7 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+                      android.widget.FrameLayout{c1c8ad3 VFE...CL. .......D 26,16-305,173 #7f090038 app:id/card}
+                        android.widget.ImageView{13e06ad V.ED..... ......ID 0,0-279,157 #7f09002c app:id/banner}
+                        android.widget.ImageView{43fbde2 G.ED..... ......I. 0,0-0,0 #7f09005d app:id/icon}
+    View Hierarchy:
+                            android.widget.ImageView{6bb9d0a G.ED..... ......I. 0,0-0,0 #1020006 android:id/icon}
+                            android.widget.ImageView{6d93cf3 G.ED..... ......I. 0,0-0,0 #1020006 android:id/icon}
+                            android.widget.ImageView{54302c8 G.ED..... ......I. 0,0-0,0 #1020006 android:id/icon}
+                            android.widget.ImageView{3b8999 G.ED..... ......I. 0,0-0,0 #1020006 android:id/icon}
+                            androidx.preference.internal.PreferenceImageView{3a3072f G.ED..... ......I. 0,0-0,0 #1020006 android:id/icon}
+                            androidx.preference.internal.PreferenceImageView{f3cbd4 G.ED..... ......I. 0,0-0,0 #1020006 android:id/icon}

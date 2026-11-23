@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys activity activities | grep -m1 mFocusedApp"], "timeout": 60}

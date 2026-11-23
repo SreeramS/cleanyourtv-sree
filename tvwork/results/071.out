@@ -1,0 +1,7 @@
+  mWakefulness=Awake
+Failed to write while dumping service power: Broken pipe
+11-17 19:47:18.976   828   958 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:47:19.838   828  1752 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:47:21.903   828   911 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:48:02.762   828   828 I screen_toggled: 1
+11-17 19:48:02.792   828   938 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]

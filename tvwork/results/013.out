@@ -1,0 +1,18 @@
+recorded 5 packages on 192.168.29.174 (0 already disabled, left alone by undo) -> /Users/sreerams/.cleanyourtv/recovery-192.168.29.174-5daed94d.json
+HOME before: com.google.android.tvlauncher/.MainActivity
+undo with tools/restore.sh <same list>; keep this file, it is the only copy.
+$ pm disable-user --user 0 com.google.android.feedback
+Package com.google.android.feedback new state: disabled-user
+$ pm disable-user --user 0 com.google.android.partnersetup
+Package com.google.android.partnersetup new state: disabled-user
+$ pm disable-user --user 0 com.google.android.onetimeinitializer
+Package com.google.android.onetimeinitializer new state: disabled-user
+$ pm disable-user --user 0 com.sony.dtv.multiscreendemo
+Package com.sony.dtv.multiscreendemo new state: disabled-user
+$ pm list packages -d
+package:com.google.android.partnersetup
+package:com.sony.dtv.multiscreendemo
+package:com.google.android.onetimeinitializer
+package:com.google.android.feedback
+package:com.sony.dtv.ecodashboard
+package:com.sony.dtv.b2b.vendorprotocol

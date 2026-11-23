@@ -1,0 +1,20 @@
+package:com.apple.atve.androidtv.appletv
+package:com.suntv.sunnxt
+package:com.spotify.tv.android
+package:com.prasarbharati.bharat.ott
+package:com.jio.media.jiotvplus
+package:com.google.android.videos
+package:com.sonyliv
+package:com.graymatrix.did
+package:in.startv.hotstar
+---
+HAVE com.google.android.youtube.tv
+HAVE com.netflix.ninja
+HAVE com.amazon.amazonvideo.livingroom
+HAVE com.google.android.katniss
+HAVE com.google.android.apps.mediashell
+HAVE com.google.android.youtube.tvmusic
+HAVE com.graymatrix.did
+HAVE in.startv.hotstar
+HAVE com.google.android.tts
+HAVE com.google.android.backdrop

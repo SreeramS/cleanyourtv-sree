@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys activity top | grep -A2000 \"ACTIVITY com.gathin.tvhome\" | grep -B2 -A40 \"    ViewRoot:\" | head -60; dumpsys activity top | grep -A2000 \"ACTIVITY com.gathin.tvhome\" | grep -m2 \"DecorView\""], "timeout": 60}

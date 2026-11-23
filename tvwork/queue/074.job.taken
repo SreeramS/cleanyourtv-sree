@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "logcat -b events -d -v time | grep -E \"19:49:1[0-9]\" | grep -E \"tvhome|screen_toggled|power_sleep|power_screen\" | tail -30"], "timeout": 60}

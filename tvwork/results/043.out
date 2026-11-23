@@ -1,0 +1,7 @@
+com.gathin.tvhome/.MainActivity
+11-17 17:12:43.412   837   837 I wm_set_resumed_activity: [0,com.realtek.advancesetting/.FallbackHome,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 17:12:49.276   837  1319 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,minimalResumeActivityLocked - onActivityStateChanged]
+hostname
+Physical size: 3840x2160
+Override size: 1920x1080
+Physical density: 320

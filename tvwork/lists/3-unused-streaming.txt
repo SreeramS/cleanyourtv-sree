@@ -1,0 +1,9 @@
+# Sony BRAVIA VU2, Android 14 - batch 3: streaming apps the owner does not use (checklist 2026-11-17)
+# Kept: YouTube, Netflix, Prime Video, JioHotstar, ZEE5, Sony LIV, Spotify, Assistant, Chromecast, updates
+# Undo: TV_HOST=<tv ip> tools/restore.sh ../tvwork/lists/3-unused-streaming.txt
+com.google.android.youtube.tvmusic       # YouTube Music
+com.apple.atve.androidtv.appletv         # Apple TV
+com.suntv.sunnxt                         # Sun NXT
+com.jio.media.jiotvplus                  # JioTV+
+com.prasarbharati.bharat.ott             # Waves (Prasar Bharati)
+com.google.android.videos                # Google Play Movies & TV

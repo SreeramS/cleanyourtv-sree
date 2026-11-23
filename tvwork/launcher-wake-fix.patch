@@ -1,0 +1,59 @@
+diff --git a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+index eccf73fe..6767c4a5 100644
+--- a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+@@ -334,6 +334,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     private PopupWindow openPopup;
+     /** Reorder mode is on (top-bar button). */
+     private boolean reordering;
++    /**
++     * onPause cut a fade-in short (hero, ambient glow, glass) or the tiles' entrance animation: the flags already
++     * said "shown" while the views stayed near alpha 0, so Home came back with no tiles, highlight or name. Seen on
++     * a Sony BRAVIA VU2 (Realtek, Android 14), whose tuner (com.realtek.dtv ASUService) opens its channel setup
++     * at every power-off, so a quick power-on resumes, pauses and resumes Home within a second.
++     * onWindowFocusChanged repairs it once Home has the screen again.
++     */
++    private boolean fadeCutByPause;
+     /** Key of the tile being carried in reorder mode, or null. */
+     private String movingKey;
+     /** Tile order when reorder mode started, to save only when something moved. */
+@@ -1318,6 +1326,24 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+         hero.animate().cancel();
+         ambient.animate().cancel();
+         heroArt.animate().cancel();
++        // A fade-in cancelled part-way leaves its view nearly transparent while the flag says shown, and the next
++        // show only moves it. Forget it was shown, so the repair in onWindowFocusChanged fades it in again.
++        if (heroShown && hero.getAlpha() < 1f) {
++            heroShown = false;
++            fadeCutByPause = true;
++        }
++        if (glassShown && glass.getAlpha() < 1f) {
++            glass.animate().cancel();
++            glassShown = false;
++            fadeCutByPause = true;
++        }
++        for (int i = 0; i < grid.getChildCount(); i++) {
++            android.view.animation.Animation a = grid.getChildAt(i).getAnimation();
++            if (a != null && !a.hasEnded()) {
++                fadeCutByPause = true;
++                break;
++            }
++        }
+         handler.removeCallbacks(minuteTick);
+         handler.removeCallbacks(openWhenOnline);
+         startPending = null;   // leaving Home before the network came back: the boot's app stays closed
+@@ -1369,6 +1395,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     public void onWindowFocusChanged(boolean hasFocus) {
+         super.onWindowFocusChanged(hasFocus);
+         if (hasFocus) {
++            if (fadeCutByPause && resumed && !reordering && appLibrary == null && adapter.appCount() > 0) {
++                fadeCutByPause = false;
++                // Tiles whose entrance never ran stay at its first frame until something redraws them.
++                for (int i = 0; i < grid.getChildCount(); i++) grid.getChildAt(i).clearAnimation();
++                grid.invalidate();
++                // The same tiles: put focus back and fade the glass, name and glow in, without the entrance.
++                reloadApps(true, false, false);
++            }
+             startPendingSettingsReorder();
+             if (libraryFocusPending && appLibrary == null) focusLibrary();
+             showCardPrompt();

@@ -1,0 +1,3 @@
+  mCurrentFocus=Window{35b0c37 u0 com.gathin.tvhome/com.gathin.tvhome.MainActivity}
+  mFocusedApp=ActivityRecord{c886e74 u0 com.gathin.tvhome/.MainActivity t23288}
+Failed to write while dumping service window: Broken pipe

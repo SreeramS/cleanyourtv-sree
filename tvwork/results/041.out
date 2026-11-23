@@ -1,0 +1,8 @@
+ro.product.model = BRAVIA VU2
+ro.product.device = BRAVIA_VU1_4K
+ro.build.version.release = 14
+ro.build.version.sdk = 34
+ro.build.display.id = UKR1.240726.001
+ro.product.manufacturer = Sony
+ro.adb.secure = 1
+service.adb.tcp.port = 5555

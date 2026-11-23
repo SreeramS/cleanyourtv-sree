@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys power | grep -m2 -E \"mWakefulness=|mHoldingDisplaySuspendBlocker\"; dumpsys display | grep -m2 -E \"mState=|Display State\"; logcat -d -v time | grep -E \"19:4[5-7]\" | grep -E \"Going to sleep|Waking up|powerPress|screen_toggled\" | tail -10"], "timeout": 60}

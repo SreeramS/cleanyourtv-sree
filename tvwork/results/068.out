@@ -1,0 +1,11 @@
+---
+  mCurrentFocus=null
+  mFocusedApp=ActivityRecord{60661cb u0 com.gathin.tvhome/.MainActivity t23252}
+Failed to write while dumping service window: Broken pipe
+2685
+11-17 19:39:27.791   828  1432 I wm_set_resumed_activity: [0,com.gathin.tvhome/android.service.dreams.DreamActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:46:27.042   828  1752 I wm_set_resumed_activity: [0,com.realtek.dtv/.DigitalSetup.DigitalChannelSetupActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:46:29.283   828  3041 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:47:18.976   828   958 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:47:19.838   828  1752 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:47:21.903   828   911 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]

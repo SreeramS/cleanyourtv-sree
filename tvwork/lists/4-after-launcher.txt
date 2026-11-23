@@ -1,0 +1,7 @@
+# Sony BRAVIA VU2, Android 14 - batch 4, after launcher/ took Home
+# com.google.android.tvlauncher was disabled by launcher/build-and-install.sh (re-enable it as shown in README).
+# Screensaver switched first: settings put secure screensaver_components com.gathin.tvhome/.ClockDream
+#   (was com.google.android.backdrop/.Backdrop; see backup/settings-secure.txt)
+# Undo: TV_HOST=<tv ip> tools/restore.sh ../tvwork/lists/4-after-launcher.txt
+com.google.android.tvrecommendations     # recommendation rows for the stock home
+com.google.android.backdrop              # Ambient screensaver (owner chose to drop it)

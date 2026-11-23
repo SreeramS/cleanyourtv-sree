@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "pid=$(pidof com.gathin.tvhome); echo pid=$pid; logcat -d --pid=$pid | grep -v -E \"^--------\" | tail -60"], "timeout": 60}

@@ -1,0 +1,5 @@
+      mResumed=true mStopped=false mFinished=false
+    ViewRoot:
+      mStopped=false
+      mPausedForTransition=false
+      mTraversalScheduled=false

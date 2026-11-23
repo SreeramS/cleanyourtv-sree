@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "f(){ dumpsys gfxinfo com.gathin.tvhome | grep -m1 \"Total frames rendered\"; }; f; am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n com.gathin.tvhome/.MainActivity | grep -E \"Status|LaunchState\"; sleep 2; f; dumpsys display | grep -m3 -E \"mState=|Display State|mGlobalDisplayState\""], "timeout": 60}

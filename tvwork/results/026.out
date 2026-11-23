@@ -1,0 +1,14 @@
+com.gathin.tvhome/.MainActivity
+      topResumedActivity=ActivityRecord{e0e7789 u0 com.google.android.backdrop/android.service.dreams.DreamActivity t23189}
+  ResumedActivity: ActivityRecord{e0e7789 u0 com.google.android.backdrop/android.service.dreams.DreamActivity t23189}
+package:com.google.android.tvlauncher
+3 activities found:
+  Activity #0:
+    priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true
+    com.gathin.tvhome/.MainActivity
+  Activity #1:
+    priority=-999 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true
+    com.realtek.advancesetting/.FallbackHome
+  Activity #2:
+    priority=-1000 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=true
+    com.android.tv.settings/.system.FallbackHome

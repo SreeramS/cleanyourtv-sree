@@ -1,0 +1,368 @@
+diff --git a/docs/TROUBLESHOOTING.md b/docs/TROUBLESHOOTING.md
+index c6f4c193..d272a8c7 100644
+--- a/docs/TROUBLESHOOTING.md
++++ b/docs/TROUBLESHOOTING.md
+@@ -782,6 +782,20 @@ Things that bit us or contributors, so they don't bite you. Commands use `tools/
+   `.RecoveryActivity` on a Xiaomi MiTV-MOEU0 (`V816.0.26.10.12.1`), `set-home-activity` did not change it,
+   and after one reboot the TV never left the boot animation and only a factory reset brought it back
+   ([#3578](https://github.com/Gathin23/cleanyourtv/issues/3578)). Enable launcherx first, every time.
++- **Home comes back with no tiles, highlight or name after a quick power off and on** (Sony BRAVIA VU2,
++  Realtek `rtd2885m`, Android 14 `UKR1.240726.001`). The top bar and the empty dock band show; one arrow key
++  brings the tiles back but not the glass or the app name, and only a force-stop of `com.gathin.tvhome` brings
++  everything back. The tuner's Automatic Service Update (`com.realtek.dtv` `ASUService`) opens
++  `.DigitalSetup.DigitalChannelSetupActivity` at every power-off, so a power-on within a second or two restarts
++  and resumes Home while its window is still invisible behind that screen. Two things go wrong: the refocus in
++  `reloadApps` finds no laid-out tile and the fades it starts stay at alpha 0, and the launcher process can miss
++  the display's ON event, after which every window in it skips each draw
++  (`tools/tv.py "dumpsys activity top" | grep mLastPerformDrawFailedReason` says `screen_off` while the window is
++  focused and visible, `dumpsys gfxinfo com.gathin.tvhome` stops counting frames, the clock stops). `recreate()`
++  does not help, since the stale display state belongs to the process. The launcher now checks after each
++  screen-on and window focus that Home draws: if nothing is drawn while `PowerManager.isInteractive()`, it
++  restarts its process (once a minute at most, logged as `TvHome`), and otherwise repairs stuck fades and tiles.
++  Turning Automatic Service Update off avoids the trigger; the tuner itself must stay enabled.
+ - **Home worked for days, then went black after a power cut** (Acer R4G and Panasonic 4KTV-3MUP,
+   MOKA `R4_GTV`, Google TV 14): the firmware re-enables setupwraith at every cold boot and its
+   `.RecoveryActivity` takes Home. `logcat | grep RecoveryActivity` shows it starting several times a
+diff --git a/examples/sony-bravia-vu2/debloat.txt b/examples/sony-bravia-vu2/debloat.txt
+index fc077b14..6814a162 100644
+--- a/examples/sony-bravia-vu2/debloat.txt
++++ b/examples/sony-bravia-vu2/debloat.txt
+@@ -57,6 +57,9 @@
+ #   the authorisations revoked, tools/adb-closed.py reported 5555 refused after a reboot.
+ # - Remote: Home, Input, Netflix, YouTube, Prime Video, the Settings gear and the mic work with no key
+ #   helper, and a held Volume + still ramps. The TV boots straight into launcher/, not Live TV.
++# - Power: the tuner's Automatic Service Update opens its Digital Channel Setup screen at every power-off, and a
++#   quick power-on used to leave launcher/ blank (no tiles, glass or name; docs/TROUBLESHOOTING.md). Fixed in the
++#   launcher on a third unit (2026-11-17, same build): checked with quick power cycles, app round trips and a restart.
+ # - Status: applied 2026-10-31 on one TV in four batches with a screenshot after each, and rebooted
+ #   once with every entry still disabled. Not yet lived with for several days.
+ 
+diff --git a/launcher/app/src/main/java/com/gathin/tvhome/Config.java b/launcher/app/src/main/java/com/gathin/tvhome/Config.java
+index 0d336c94..df397ef6 100644
+--- a/launcher/app/src/main/java/com/gathin/tvhome/Config.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/Config.java
+@@ -254,11 +254,13 @@ final class Config {
+     final Map<String, Set<String>> wallpaperMoods;
+     /** Shape of the glow behind the focused app (config.xml, glow_style): {@link #GLOW_RADIAL} or {@link #GLOW_HORIZON}. */
+     final String glowStyle;
+-    /** The focus highlight's look (config.xml, glass_style): {@link #GLASS_DEFAULT}, {@link #GLASS_RIM} or {@link #GLASS_HALO}. */
++    /** The focus highlight's look (config.xml, glass_style): {@link #GLASS_DEFAULT}, {@link #GLASS_RIM}, {@link #GLASS_HALO},
++     *  or one of them in green: {@link #GLASS_GREEN}, {@link #GLASS_GREEN_RIM}, {@link #GLASS_GREEN_HALO}. */
+     final String glassStyle;
+ 
+     static final String GLOW_RADIAL = "radial", GLOW_HORIZON = "horizon";
+     static final String GLASS_DEFAULT = "glass", GLASS_RIM = "rim", GLASS_HALO = "halo";
++    static final String GLASS_GREEN = "green-glass", GLASS_GREEN_RIM = "green-rim", GLASS_GREEN_HALO = "green-halo";
+     /** Show each rotating wallpaper's name from wallpapers/captions.txt (config.xml / theme wallpaper_captions). */
+     final boolean wallpaperCaptions;
+     /** Answer VIEW_INPUTS with the Inputs menu (handle_view_inputs); see InputsRequestActivity. */
+@@ -431,6 +433,9 @@ final class Config {
+         if (value == null) return GLASS_DEFAULT;
+         String v = value.trim();
+         if (GLASS_RIM.equalsIgnoreCase(v)) return GLASS_RIM;
++        if (GLASS_GREEN.equalsIgnoreCase(v)) return GLASS_GREEN;
++        if (GLASS_GREEN_RIM.equalsIgnoreCase(v)) return GLASS_GREEN_RIM;
++        if (GLASS_GREEN_HALO.equalsIgnoreCase(v)) return GLASS_GREEN_HALO;
+         return GLASS_HALO.equalsIgnoreCase(v) ? GLASS_HALO : GLASS_DEFAULT;
+     }
+ 
+diff --git a/launcher/app/src/main/java/com/gathin/tvhome/GlassView.java b/launcher/app/src/main/java/com/gathin/tvhome/GlassView.java
+index 0fd2b6cd..6673d0ef 100644
+--- a/launcher/app/src/main/java/com/gathin/tvhome/GlassView.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/GlassView.java
+@@ -29,6 +29,9 @@ public class GlassView extends View {
+     /** glass_style rim or halo: no sheen and no fill, only the crisp rim (and, for halo, a lighter outer glow). */
+     private boolean flat;
+     private boolean halo;
++    /** glass_style green-glass, green-rim or green-halo: the same look with a green rim, glow and (glass) fill. */
++    private boolean green;
++    private static final int GREEN_RGB = 0x34C759;
+ 
+     public GlassView(Context context, AttributeSet attrs) {
+         super(context, attrs);
+@@ -47,9 +50,9 @@ public class GlassView extends View {
+     /** Tints the rim and the outer glow; 0 restores the plain white glass. */
+     void setAccent(int argb) {
+         if (argb == 0) {
+-            glowRgb = 0xFFFFFF;
+-            glowAlpha = 0x30;
+-            rim.setColor(0xCCFFFFFF);
++            glowRgb = green ? GREEN_RGB : 0xFFFFFF;
++            glowAlpha = green ? 0x60 : 0x30;
++            rim.setColor(green ? 0xE6000000 | GREEN_RGB : 0xCCFFFFFF);
+         } else {
+             glowRgb = argb & 0xFFFFFF;
+             glowAlpha = 0x70;
+@@ -63,9 +66,14 @@ public class GlassView extends View {
+ 
+     /** One of Config's GLASS_* styles. */
+     void setStyle(String style) {
+-        flat = Config.GLASS_RIM.equals(style) || Config.GLASS_HALO.equals(style);
+-        halo = Config.GLASS_HALO.equals(style);
++        green = Config.GLASS_GREEN.equals(style) || Config.GLASS_GREEN_RIM.equals(style)
++                || Config.GLASS_GREEN_HALO.equals(style);
++        flat = Config.GLASS_RIM.equals(style) || Config.GLASS_HALO.equals(style)
++                || Config.GLASS_GREEN_RIM.equals(style) || Config.GLASS_GREEN_HALO.equals(style);
++        halo = Config.GLASS_HALO.equals(style) || Config.GLASS_GREEN_HALO.equals(style);
+         rim.setStrokeWidth((flat ? 2f : 1.5f) * density);
++        setAccent(0);   // the plain colours of this style (white, or green); a festive accent is set again after
++        if (getWidth() > 0) updateFill(getHeight());
+         invalidate();
+     }
+ 
+@@ -77,7 +85,13 @@ public class GlassView extends View {
+     @Override
+     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+         super.onSizeChanged(w, h, oldw, oldh);
+-        fill.setShader(new LinearGradient(0, 0, 0, h, 0x3DFFFFFF, 0x12FFFFFF, Shader.TileMode.CLAMP));
++        updateFill(h);
++    }
++
++    /** The slab's fill: clear white glass, or lightly green-tinted glass for green-glass. */
++    private void updateFill(int h) {
++        int rgb = green ? GREEN_RGB : 0xFFFFFF;
++        fill.setShader(new LinearGradient(0, 0, 0, h, 0x3D000000 | rgb, 0x12000000 | rgb, Shader.TileMode.CLAMP));
+         specular.setShader(new LinearGradient(0, 0, 0, h * 0.45f, 0x66FFFFFF, 0x00FFFFFF, Shader.TileMode.CLAMP));
+     }
+ 
+diff --git a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+index eccf73fe..d291fe12 100644
+--- a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+@@ -334,6 +334,84 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     private PopupWindow openPopup;
+     /** Reorder mode is on (top-bar button). */
+     private boolean reordering;
++    /**
++     * Repairs a Home that came back without its tiles, highlight or name. Seen on a Sony BRAVIA VU2 (Realtek,
++     * Android 14): its tuner (com.realtek.dtv ASUService) opens its channel setup at every power-off, so a quick
++     * power-on restarts and resumes Home while its window is still invisible behind that screen. The refocus in
++     * reloadApps then finds no laid-out tile, the entrance animation never gets a frame, and nothing retries.
++     * Worse, the process can miss the display's ON event in that quick off-and-on: every ViewRootImpl in it then
++     * still believes the display is off and skips each draw (dumpsys activity top shows
++     * mLastPerformDrawFailedReason=screen_off with the window focused and visible; no frames, not even the clock).
++     * The stale state is the process's, so recreate() does not help and a new process does. So first check that
++     * Home draws at all, and restart the process (Android relaunches the top Home at once) if it does not.
++     * Run once Home has had window focus for a moment, and after the screen turns on: only a stuck state is touched.
++     */
++    private final Runnable repairIfStuck = this::checkDrawing;
++    private final Runnable verifyDrawing = this::verifyDrawingNow;
++    /** Set by drawWatch when the window really draws a frame. */
++    private boolean drewSinceCheck;
++    private final ViewTreeObserver.OnDrawListener drawWatch = () -> drewSinceCheck = true;
++    private final BroadcastReceiver screenOnReceiver = new BroadcastReceiver() {
++        @Override
++        public void onReceive(Context context, Intent intent) {
++            root.removeCallbacks(repairIfStuck);
++            root.postDelayed(repairIfStuck, 1000);
++        }
++    };
++
++    private void checkDrawing() {
++        if (!resumed || !hasWindowFocus()) return;
++        drewSinceCheck = false;
++        root.invalidate();
++        root.removeCallbacks(verifyDrawing);
++        root.postDelayed(verifyDrawing, 600);
++    }
++
++    private void verifyDrawingNow() {
++        if (!resumed || !hasWindowFocus()) return;
++        if (!drewSinceCheck) {
++            // Ask the power service, not this process's Display: that cached state is the one gone stale.
++            android.os.PowerManager pm = getSystemService(android.os.PowerManager.class);
++            android.content.SharedPreferences prefs = getSharedPreferences("draw_watch", MODE_PRIVATE);
++            long now = android.os.SystemClock.elapsedRealtime();
++            long last = prefs.getLong("restart_at", 0);
++            // elapsedRealtime restarts at boot: a stored time ahead of now is from before it.
++            boolean recently = last != 0 && last <= now && now - last < 60_000;
++            if (pm != null && pm.isInteractive() && !recently) {
++                android.util.Log.w("TvHome", "Home drew nothing with the screen on; restarting the launcher process");
++                prefs.edit().putLong("restart_at", now).commit();   // commit: the process ends on the next line
++                android.os.Process.killProcess(android.os.Process.myPid());
++                return;
++            }
++            android.util.Log.w("TvHome", "Home drew nothing; interactive=" + (pm != null && pm.isInteractive())
++                    + " recentRestart=" + recently);
++        }
++        repairIfStuckNow();
++    }
++
++    private void repairIfStuckNow() {
++        if (!resumed || !hasWindowFocus() || reordering || appLibrary != null || openPopup != null
++                || adapter.appCount() == 0) return;
++        boolean tilesStuck = false;
++        for (int i = 0; i < grid.getChildCount(); i++) {
++            android.view.animation.Animation a = grid.getChildAt(i).getAnimation();
++            if (a != null && !a.hasEnded()) {
++                tilesStuck = true;
++                break;
++            }
++        }
++        View focused = getCurrentFocus();
++        boolean onTile = focused != null && focused.getId() == R.id.card;
++        boolean stuck = tilesStuck || focused == null || (onTile && !glassShown)
++                || (glassShown && glass.getAlpha() < 0.99f) || (heroShown && hero.getAlpha() < 0.99f);
++        if (!stuck) return;
++        android.util.Log.i("TvHome", "repairing Home: tiles=" + tilesStuck + " focus=" + (focused != null)
++                + " glass=" + glassShown + "/" + glass.getAlpha() + " hero=" + heroShown + "/" + hero.getAlpha());
++        for (int i = 0; i < grid.getChildCount(); i++) grid.getChildAt(i).clearAnimation();
++        grid.invalidate();
++        // The same tiles: focus goes back to the last tile and the glass, name and glow fade in, with no entrance.
++        reloadApps(true, false, false);
++    }
+     /** Key of the tile being carried in reorder mode, or null. */
+     private String movingKey;
+     /** Tile order when reorder mode started, to save only when something moved. */
+@@ -935,6 +1013,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+         // Hide the glass when focus leaves the tiles.
+         // Taken off in onDestroy: recreate() keeps the window, and a listener left on it held every earlier Home.
+         getWindow().getDecorView().getViewTreeObserver().addOnGlobalFocusChangeListener(glassFocusListener);
++        getWindow().getDecorView().getViewTreeObserver().addOnDrawListener(drawWatch);
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
++            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON), Context.RECEIVER_NOT_EXPORTED);
++        } else {
++            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
++        }
+ 
+         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+@@ -1307,6 +1391,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     protected void onPause() {
+         super.onPause();
+         resumed = false;
++        root.removeCallbacks(repairIfStuck);
++        root.removeCallbacks(verifyDrawing);
+         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
+         // Only Home's own share is dropped: a key service that saw the same DOWN keeps its hold.
+         RemoteKeys.release(this);
+@@ -1369,6 +1455,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     public void onWindowFocusChanged(boolean hasFocus) {
+         super.onWindowFocusChanged(hasFocus);
+         if (hasFocus) {
++            root.removeCallbacks(repairIfStuck);
++            root.postDelayed(repairIfStuck, 700);
+             startPendingSettingsReorder();
+             if (libraryFocusPending && appLibrary == null) focusLibrary();
+             showCardPrompt();
+@@ -1388,6 +1476,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+         super.onDestroy();
+         ViewTreeObserver tree = getWindow().getDecorView().getViewTreeObserver();
+         if (tree.isAlive()) tree.removeOnGlobalFocusChangeListener(glassFocusListener);
++        if (tree.isAlive()) tree.removeOnDrawListener(drawWatch);
++        unregisterReceiver(screenOnReceiver);
++        root.removeCallbacks(repairIfStuck);
++        root.removeCallbacks(verifyDrawing);
+         RemoteKeys.release(this);
+         cancelHoldOk();
+         if (gameDay != null) gameDay.shutdown();
+diff --git a/launcher/app/src/main/res/values/config.xml b/launcher/app/src/main/res/values/config.xml
+index a32a1068..032c8627 100644
+--- a/launcher/app/src/main/res/values/config.xml
++++ b/launcher/app/src/main/res/values/config.xml
+@@ -18,9 +18,9 @@
+ 
+     <!-- Apps pinned to the dock row at the bottom, in this order. Missing apps are skipped. -->
+     <string-array name="dock_apps">
++        <item>com.google.android.youtube.tv</item>
+         <item>com.netflix.ninja</item>
+         <item>com.amazon.amazonvideo.livingroom</item>
+-        <item>com.google.android.youtube.tv</item>
+         <item>in.startv.hotstar</item>
+     </string-array>
+     <!-- With fewer dock_apps than columns (or a dock app that is not installed), the free dock slots take
+@@ -30,12 +30,11 @@
+ 
+     <!-- Apps never shown as tiles (e.g. the Live TV app, which the Inputs menu already covers). -->
+     <string-array name="hidden_apps">
+-        <item>com.mediatek.wwtv.tvcenter</item>
+-        <item>com.mitv.gallery</item>
++        <item>com.android.tv</item>
+     </string-array>
+ 
+     <!-- The TV's Live TV / tuner app, offered at the end of the Inputs menu. Leave empty to omit. -->
+-    <string name="live_tv_package" translatable="false">com.mediatek.wwtv.tvcenter</string>
++    <string name="live_tv_package" translatable="false">com.android.tv</string>
+ 
+     <!-- Open the Live TV app above the first time Home comes up after the TV is switched on, for sets that are
+          mostly used for broadcast TV. Once per boot: Home after that stays Home. Can also be set with
+@@ -558,8 +557,10 @@
+     <string name="glow_style" translatable="false">radial</string>
+     <!-- The focus highlight's look: glass (the default: a translucent slab with a bright top sheen, a crisp rim and a
+          faint outer glow), rim (the crisp rim alone, no sheen, fill or glow, for a quiet focus over a wallpaper) or
+-         halo (the rim with a lighter outer glow). Can also be set with "glass_style": "rim" in a theme's config.json. -->
+-    <string name="glass_style" translatable="false">glass</string>
++         halo (the rim with a lighter outer glow). green-glass, green-rim and green-halo are the same three looks with a
++         green rim and glow (green-glass also tints its fill). Can also be set with "glass_style": "rim" in a theme's
++         config.json. -->
++    <string name="glass_style" translatable="false">green-glass</string>
+ 
+     <!-- Tiles drawn from the app's icon and name instead of its banner (for banners that crop badly). -->
+     <string-array name="icon_tiles" translatable="false">
+diff --git a/launcher/app/src/test/java/com/gathin/tvhome/GlassStyleTest.java b/launcher/app/src/test/java/com/gathin/tvhome/GlassStyleTest.java
+index 15784fb3..dd424de5 100644
+--- a/launcher/app/src/test/java/com/gathin/tvhome/GlassStyleTest.java
++++ b/launcher/app/src/test/java/com/gathin/tvhome/GlassStyleTest.java
+@@ -19,6 +19,13 @@ public class GlassStyleTest {
+         assertEquals(Config.GLASS_HALO, Config.glassStyle("HALO "));
+     }
+ 
++    @Test
++    public void greenStylesByNameAnyCase() {
++        assertEquals(Config.GLASS_GREEN, Config.glassStyle("green-glass"));
++        assertEquals(Config.GLASS_GREEN_RIM, Config.glassStyle(" Green-Rim "));
++        assertEquals(Config.GLASS_GREEN_HALO, Config.glassStyle("GREEN-HALO"));
++    }
++
+     @Test
+     public void anythingElseIsGlass() {
+         assertEquals(Config.GLASS_DEFAULT, Config.glassStyle("glass"));
+diff --git a/tests/test_shipped_config_values.py b/tests/test_shipped_config_values.py
+index 4748eb97..b23fa9b9 100644
+--- a/tests/test_shipped_config_values.py
++++ b/tests/test_shipped_config_values.py
+@@ -214,7 +214,8 @@ class ShippedConfigValuesTest(unittest.TestCase):
+     def test_the_enum_values_are_read_out_of_the_launcher(self):
+         # A constant parse that found nothing would let every value through, the way it did for "off".
+         self.assertEqual(self.enums.get("glow_style"), ({"radial", "horizon"}, "trimmed"))
+-        self.assertEqual(self.enums.get("glass_style"), ({"glass", "rim", "halo"}, "trimmed"))
++        self.assertEqual(self.enums.get("glass_style"),
++                         ({"glass", "rim", "halo", "green-glass", "green-rim", "green-halo"}, "trimmed"))
+         self.assertEqual(self.enums.get("wallpaper_order"), ({"sequential", "shuffle"}, "exact"))
+ 
+     def test_a_value_outside_the_set_is_reported(self):
+@@ -222,7 +223,7 @@ class ShippedConfigValuesTest(unittest.TestCase):
+         # glowStyle() answered radial. The spelling is the reader's - glow and glass trim and ignore
+         # case, validOrder() does not, so `Sequential` is not `sequential`.
+         for key, value, listed in (("glow_style", "off", "horizon, radial"),
+-                                   ("glass_style", "frosted", "glass, halo, rim"),
++                                   ("glass_style", "frosted", "glass, green-glass, green-halo, green-rim, halo, rim"),
+                                    ("wallpaper_order", "Sequential", "sequential, shuffle")):
+             with self.subTest(key=key, value=value):
+                 reported = dict(problems({key: value}, self.kinds, self.enums))
+diff --git a/themes/README.md b/themes/README.md
+index af5d0d01..ac46fbbe 100644
+--- a/themes/README.md
++++ b/themes/README.md
+@@ -194,7 +194,7 @@ A new key needs one there in the same pull request.
+ | `clock_wallpaper_dim` | 0 to 90 | How dark that wallpaper is behind the clock, in percent (50 by default) |
+ | `clock_glow` | bool | The clock screensaver's coloured glow (`true` by default); `false` leaves the moving clock on plain black, e.g. for an OLED |
+ | `glow_style` | string | Shape of the glow behind the focused app, in its colour: `radial` (default) or `horizon`, the colour washing down from the top edge to black; the cinematic shelf keeps its own. Any other value falls back to `radial`; there is no value for "none", so a theme without a glow sets `ambient_glow` and `app_glow` to `false` |
+-| `glass_style` | string | Look of the focus highlight: `glass` (default: a translucent slab with a bright top sheen, a crisp rim and a faint outer glow), `rim` (the crisp rim alone, no sheen, fill or glow, for a quiet focus over a wallpaper) or `halo` (the rim with a lighter outer glow). Any other value falls back to `glass` |
++| `glass_style` | string | Look of the focus highlight: `glass` (default: a translucent slab with a bright top sheen, a crisp rim and a faint outer glow), `rim` (the crisp rim alone, no sheen, fill or glow, for a quiet focus over a wallpaper) or `halo` (the rim with a lighter outer glow); `green-glass`, `green-rim` and `green-halo` are the same looks with a green rim and glow (`green-glass` also tints its fill). Any other value falls back to `glass` |
+ | `cinematic_home` | bool | Cinematic top shelf: the focused dock app's artwork, softened, fills the top of the screen in its colour, with a larger name, "Last opened" (apps opened from Home), dock position dots, a focus glow in the app's colour and a translucent dock band; off by default |
+ | `cinematic_dots` | bool | With `cinematic_home`, the dock position dots under the app's name (`true` by default); `false` leaves them out |
+ | `cinematic_white_focus` | bool | With `cinematic_home`, the focus highlight stays white on the dock instead of taking the focused app's colour (`false` by default); `app_glow` still colours every tile |
+diff --git a/tools/manage.py b/tools/manage.py
+index daaf99a5..42801d9a 100644
+--- a/tools/manage.py
++++ b/tools/manage.py
+@@ -586,7 +586,7 @@ def panel_extra_problem(text):
+ # switch it left where it was, the dead `"glow_style": "off"` #3429 removed from two themes.
+ ENUMS = {
+     "glow_style": (("radial", "horizon"), "radial", True),
+-    "glass_style": (("glass", "rim", "halo"), "glass", True),
++    "glass_style": (("glass", "rim", "halo", "green-glass", "green-rim", "green-halo"), "glass", True),
+     "clock_format": (("12", "24", "system"), "system", True),
+     "wallpaper_order": (("shuffle", "sequential"), "shuffle", False),
+ }

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "input keyevent BACK; settings get secure tv_input_hidden_inputs; settings get secure tv_input_custom_labels; dumpsys tv_input | grep -E \"inputId|TvInputInfo\\{id=\" | head -20"], "timeout": 30}

@@ -1,0 +1,35 @@
+    lastUpdateTime=2026-11-17 19:57:26
+Failed to write while dumping service package: Broken pipe
+pid=3470
+Total frames rendered: 45
+Failed to write while dumping service gfxinfo: Broken pipe
+11-17 19:57:41.630 I/wm_on_destroy_called( 1642): [194569716,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,performDestroy,0]
+11-17 19:57:41.635 I/wm_task_removed(  828): [23325,23325,0,removeChild, last child = ActivityRecord{b98e5f4 u0 com.realtek.dtv/.DigitalSetup.DigitalChannelSetupActivity t-1 f}} in Task{4e2711d #23325 type=standard A=1000:com.realtek.dtv}]
+11-17 19:57:42.509 I/wm_on_top_resumed_lost_called( 3470): [195776320,com.gathin.tvhome.MainActivity,pausing]
+11-17 19:57:42.509 I/wm_on_paused_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performPause,0]
+11-17 19:57:42.510 I/wm_on_stop_called( 3470): [195776320,com.gathin.tvhome.MainActivity,handleRelaunchActivity,1]
+11-17 19:57:42.512 I/wm_on_destroy_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performDestroy,2]
+11-17 19:57:42.570 I/wm_on_create_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performCreate,35]
+11-17 19:57:42.572 I/wm_on_start_called( 3470): [195776320,com.gathin.tvhome.MainActivity,handleStartActivity,1]
+11-17 19:57:42.596 I/wm_on_resume_called( 3470): [195776320,com.gathin.tvhome.MainActivity,RESUME_ACTIVITY,24]
+11-17 19:57:42.597 I/wm_on_top_resumed_gained_called( 3470): [195776320,com.gathin.tvhome.MainActivity,topWhenResuming]
+11-17 19:57:51.679 I/input_interaction(  828): Interaction with: 27a5ee9 com.gathin.tvhome/com.gathin.tvhome.MainActivity (server), PointerEventDispatcher0 (server), 
+11-17 19:57:53.788 I/wm_pause_activity(  828): [0,195776320,com.gathin.tvhome/.MainActivity,userLeaving=true,pauseBackTasks]
+11-17 19:57:53.802 I/wm_on_top_resumed_lost_called( 3470): [195776320,com.gathin.tvhome.MainActivity,topStateChangedWhenResumed]
+11-17 19:57:53.807 I/wm_on_paused_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performPause,0]
+11-17 19:57:53.817 I/wm_add_to_stopping(  828): [0,195776320,com.gathin.tvhome/.MainActivity,makeInvisible]
+11-17 19:57:53.849 I/input_focus(  828): [Focus leaving 27a5ee9 com.gathin.tvhome/com.gathin.tvhome.MainActivity (server),reason=NO_WINDOW]
+11-17 19:57:56.376 I/sysui_multi_action(  828): [319,2570,322,2562,325,3415,757,761,758,7,759,2,806,in.startv.hotstar,871,com.hotstar.MainActivity,904,com.gathin.tvhome,905,0,945,164,1320,8,1321,5]
+11-17 19:57:56.778 I/wm_stop_activity(  828): [0,195776320,com.gathin.tvhome/.MainActivity]
+11-17 19:57:56.809 I/wm_on_stop_called( 3470): [195776320,com.gathin.tvhome.MainActivity,STOP_ACTIVITY_ITEM,0]
+11-17 19:57:58.183 I/wm_set_resumed_activity(  828): [0,com.gathin.tvhome/.MainActivity,finish-top adjustFocusToNextFocusableTask]
+11-17 19:57:58.209 I/wm_set_resumed_activity(  828): [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:57:58.210 I/wm_resume_activity(  828): [0,195776320,23324,com.gathin.tvhome/.MainActivity]
+11-17 19:57:58.215 I/wm_on_restart_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performRestart,0]
+11-17 19:57:58.229 I/wm_on_start_called( 3470): [195776320,com.gathin.tvhome.MainActivity,handleStartActivity,14]
+11-17 19:57:58.231 I/wm_on_resume_called( 3470): [195776320,com.gathin.tvhome.MainActivity,RESUME_ACTIVITY,1]
+11-17 19:57:58.231 I/wm_on_top_resumed_gained_called( 3470): [195776320,com.gathin.tvhome.MainActivity,topWhenResuming]
+11-17 19:57:58.245 I/input_focus(  828): [Focus request 27a5ee9 com.gathin.tvhome/com.gathin.tvhome.MainActivity,reason=UpdateInputWindows]
+11-17 19:57:58.339 I/input_focus(  828): [Focus entering 27a5ee9 com.gathin.tvhome/com.gathin.tvhome.MainActivity (server),reason=Window became focusable. Previous reason: NOT_VISIBLE]
+11-17 19:57:58.763 I/wm_destroy_activity(  828): [0,169779151,23326,in.startv.hotstar/com.hotstar.MainActivity,finish-imm:idle]
+11-17 19:57:59.866 I/input_interaction(  828): Interaction with: 27a5ee9 com.gathin.tvhome/com.gathin.tvhome.MainActivity (server), PointerEventDispatcher0 (server), 

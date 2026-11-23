@@ -1,0 +1,15 @@
+  bash arg: -p
+  bash arg: com.google.android.youtube.tv
+  bash arg: -c
+  bash arg: android.intent.category.LEANBACK_LAUNCHER
+  bash arg: 1
+args: [-p, com.google.android.youtube.tv, -c, android.intent.category.LEANBACK_LAUNCHER, 1]
+ arg: "-p"
+ arg: "com.google.android.youtube.tv"
+ arg: "-c"
+ arg: "android.intent.category.LEANBACK_LAUNCHER"
+ arg: "1"
+data="com.google.android.youtube.tv"
+data="android.intent.category.LEANBACK_LAUNCHER"
+Events injected: 1
+## Network stats: elapsed time=69ms (0ms mobile, 0ms wifi, 69ms not connected)

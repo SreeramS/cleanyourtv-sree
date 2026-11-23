@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME; wm size; wm density; settings get secure display_density_forced"], "timeout": 120}

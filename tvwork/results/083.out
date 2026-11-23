@@ -1,0 +1,9 @@
+      curProcState=0 curCapability=LCMNFU
+      curProcState=4 curCapability=LCMNFU
+      curProcState=5 curCapability=LCMNFU
+      curProcState=0 curCapability=LCMNFU
+      curProcState=4 curCapability=---NFU
+5:schedtune:/top-app
+4:memory:/
+3:cpuset:/top-app
+  use_freezer=false

@@ -1,0 +1,25 @@
+11-17 19:49:14.378 I/power_sleep_requested(  828): 0
+11-17 19:49:14.806 I/wm_on_top_resumed_lost_called( 2685): [101081547,com.gathin.tvhome.MainActivity,topStateChangedWhenResumed]
+11-17 19:49:14.809 I/wm_pause_activity(  828): [0,101081547,com.gathin.tvhome/.MainActivity,userLeaving=true,pauseBackTasks]
+11-17 19:49:14.818 I/wm_on_paused_called( 2685): [101081547,com.gathin.tvhome.MainActivity,performPause,0]
+11-17 19:49:14.820 I/wm_add_to_stopping(  828): [0,101081547,com.gathin.tvhome/.MainActivity,makeInvisible]
+11-17 19:49:14.889 I/input_focus(  828): [Focus leaving 12f09c6 com.gathin.tvhome/com.gathin.tvhome.MainActivity (server),reason=Waiting for window because NO_WINDOW]
+11-17 19:49:15.032 I/screen_toggled(  828): 0
+11-17 19:49:15.033 I/power_screen_state(  828): [0,2,0,0,799]
+11-17 19:49:15.033 I/power_screen_broadcast_send(  828): 1
+11-17 19:49:15.077 I/wm_stop_activity(  828): [0,101081547,com.gathin.tvhome/.MainActivity]
+11-17 19:49:15.138 I/wm_on_stop_called( 2685): [101081547,com.gathin.tvhome.MainActivity,STOP_ACTIVITY_ITEM,6]
+11-17 19:49:15.468 I/power_screen_broadcast_done(  828): [0,435,1]
+11-17 19:49:15.757 I/screen_toggled(  828): 1
+11-17 19:49:15.763 I/power_screen_broadcast_send(  828): 1
+11-17 19:49:15.789 I/power_screen_state(  828): [1,0,0,0,38]
+11-17 19:49:15.862 I/wm_set_resumed_activity(  828): [0,com.gathin.tvhome/.MainActivity,finish-top adjustFocusToNextFocusableTask]
+11-17 19:49:15.884 I/wm_set_resumed_activity(  828): [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:49:15.885 I/wm_resume_activity(  828): [0,101081547,23252,com.gathin.tvhome/.MainActivity]
+11-17 19:49:15.885 I/wm_on_restart_called( 2685): [101081547,com.gathin.tvhome.MainActivity,performRestart,0]
+11-17 19:49:15.895 I/wm_on_start_called( 2685): [101081547,com.gathin.tvhome.MainActivity,handleStartActivity,9]
+11-17 19:49:15.963 I/wm_on_resume_called( 2685): [101081547,com.gathin.tvhome.MainActivity,RESUME_ACTIVITY,67]
+11-17 19:49:15.963 I/wm_on_top_resumed_gained_called( 2685): [101081547,com.gathin.tvhome.MainActivity,topWhenResuming]
+11-17 19:49:15.977 I/input_focus(  828): [Focus request 12f09c6 com.gathin.tvhome/com.gathin.tvhome.MainActivity,reason=UpdateInputWindows]
+11-17 19:49:16.097 I/input_focus(  828): [Focus entering 12f09c6 com.gathin.tvhome/com.gathin.tvhome.MainActivity (server),reason=Window became focusable. Previous reason: NOT_VISIBLE]
+11-17 19:49:16.108 I/power_screen_broadcast_done(  828): [1,344,1]

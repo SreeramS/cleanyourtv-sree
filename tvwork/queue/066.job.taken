@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME | tail -1; dumpsys package com.gathin.tvhome | grep -m1 lastUpdateTime"], "timeout": 60}

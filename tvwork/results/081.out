@@ -1,0 +1,13 @@
+  mWakefulness=Awake
+Failed to write while dumping service power: Broken pipe
+Total frames rendered: 38
+Janky frames: 5 (13.16%)
+Failed to write while dumping service gfxinfo: Broken pipe
+Total frames rendered: 38
+Failed to write while dumping service gfxinfo: Broken pipe
+    mViewVisibility=0x0 mHaveFrame=true mObscured=false
+    mHasSurface=true isReadyForDisplay()=true mWindowRemovalAllowed=false
+      mDrawState=HAS_DRAWN       mLastHidden=false
+    mForceSeamlesslyRotate=false seamlesslyRotate: pending=null    isOnScreen=true
+    isVisible=true
+    mViewVisibility=0x0 mHaveFrame=true mObscured=true

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "settings put global private_dns_mode hostname"], "timeout": 30}

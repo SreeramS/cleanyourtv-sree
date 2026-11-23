@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME | tail -1; dumpsys activity activities | grep -m2 -E \"mFocusedApp|ResumedActivity\"; pm list packages -d | grep -E \"tvlauncher|tvrecomm\"; cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME"], "timeout": 60}

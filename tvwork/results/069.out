@@ -1,0 +1,7 @@
+  mWakefulness=Asleep
+  mHoldingDisplaySuspendBlocker=false
+Failed to write while dumping service power: Broken pipe
+Display States: size=1
+  Display State=OFF
+Failed to write while dumping service display: Broken pipe
+11-17 19:46:23.971 I/PowerManagerService(  828): Going to sleep due to timeout (uid 1000, screenOffTimeout=300000, activityTimeoutWM=-1, maxDimRatio=0.20000005, maxDimDur=7000)...

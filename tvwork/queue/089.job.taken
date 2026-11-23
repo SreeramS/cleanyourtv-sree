@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys package com.gathin.tvhome | grep -m1 lastUpdateTime; p=$(pidof com.gathin.tvhome); echo pid=$p; dumpsys gfxinfo com.gathin.tvhome | grep -m1 \"Total frames\"; logcat -b events -d -v time | grep -E \"19:5[5-9]\" | grep -E \"tvhome|screen_toggled|DigitalChannel|am_proc_start.*tvhome|wm_relaunch|wm_destroy\" | tail -30"], "timeout": 60}

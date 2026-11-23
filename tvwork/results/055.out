@@ -1,0 +1,23 @@
+  mWakefulness=Awake
+  mWakefulnessChanging=false
+Display Power: com.android.server.power.PowerManagerService$1@6e1ffff
+Failed to write while dumping service power: Broken pipe
+  mCurrentFocus=Window{ad34951 u0 com.gathin.tvhome/com.gathin.tvhome.MainActivity}
+  mFocusedApp=ActivityRecord{f6a97f5 u0 com.gathin.tvhome/.MainActivity t23229}
+      topResumedActivity=ActivityRecord{f6a97f5 u0 com.gathin.tvhome/.MainActivity t23229}
+  ResumedActivity: ActivityRecord{f6a97f5 u0 com.gathin.tvhome/.MainActivity t23229}
+11-17 19:27:54.670   828  2076 I wm_set_resumed_activity: [0,com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:27:58.902   828  2101 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,finish-top adjustFocusToNextFocusableTask]
+11-17 19:27:58.940   828   959 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:28:02.595   828  1432 I wm_set_resumed_activity: [0,com.android.tv.settings/.MainSettings,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:28:08.983   828  2101 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:28:12.431   828  2101 I wm_set_resumed_activity: [0,com.realtek.dtv/.DigitalSetup.DigitalChannelSetupActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:28:12.631   828   828 I screen_toggled: 0
+11-17 19:28:12.908   828   828 I screen_toggled: 1
+11-17 19:28:12.936   828   938 I wm_set_resumed_activity: [0,com.realtek.dtv/.DigitalSetup.DigitalChannelSetupActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:28:13.508   828  2101 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,finish-top adjustFocusToNextFocusableTask]
+11-17 19:28:13.617   828  1226 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:28:21.727   828  3041 I wm_set_resumed_activity: [0,com.android.tv.settings/.connectivity.NetworkActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:28:23.906   828  3041 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:28:24.452   828  1226 I wm_set_resumed_activity: [0,com.android.tv.settings/.connectivity.NetworkActivity,minimalResumeActivityLocked - onActivityStateChanged]
+11-17 19:28:27.458   828  1226 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]

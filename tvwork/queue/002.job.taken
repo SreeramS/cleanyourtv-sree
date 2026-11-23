@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "pm list packages -d; echo ---; dumpsys connectivity | grep -o \"Transports: [A-Z]*\" | head -3; getprop ro.product.brand; cmd package query-activities -a android.intent.action.MAIN -c android.intent.category.HOME | grep -E \"packageName|name=\"| head"], "timeout": 60}

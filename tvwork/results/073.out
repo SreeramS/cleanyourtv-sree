@@ -1,0 +1,16 @@
+11-17 19:49:15.084  1642  1642 I wm_on_resume_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,RESUME_ACTIVITY,0]
+11-17 19:49:15.094  1642  1642 I wm_on_top_resumed_gained_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,topStateChangedWhenResumed]
+11-17 19:49:15.094  1642  1642 I wm_on_top_resumed_lost_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,topStateChangedWhenResumed]
+11-17 19:49:15.095  1642  1642 I wm_on_paused_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,performPause,0]
+11-17 19:49:15.757   828   828 I screen_toggled: 1
+11-17 19:49:15.773   828   938 I wm_set_resumed_activity: [0,com.realtek.dtv/.DigitalSetup.DigitalChannelSetupActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:49:15.777  1642  1642 I wm_on_resume_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,RESUME_ACTIVITY,0]
+11-17 19:49:15.777  1642  1642 I wm_on_top_resumed_gained_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,topWhenResuming]
+11-17 19:49:15.862   828  3043 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,finish-top adjustFocusToNextFocusableTask]
+11-17 19:49:15.879  1642  1642 I wm_on_top_resumed_lost_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,topStateChangedWhenResumed]
+11-17 19:49:15.881  1642  1642 I wm_on_paused_called: [65007699,com.realtek.dtv.DigitalSetup.DigitalChannelSetupActivity,performPause,0]
+11-17 19:49:15.884   828  3043 I wm_set_resumed_activity: [0,com.gathin.tvhome/.MainActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:49:15.963  2685  2685 I wm_on_resume_called: [101081547,com.gathin.tvhome.MainActivity,RESUME_ACTIVITY,67]
+11-17 19:49:15.963  2685  2685 I wm_on_top_resumed_gained_called: [101081547,com.gathin.tvhome.MainActivity,topWhenResuming]
+  mCurrentFocus=Window{12f09c6 u0 com.gathin.tvhome/com.gathin.tvhome.MainActivity}
+Failed to write while dumping service window: Broken pipe

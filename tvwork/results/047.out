@@ -1,0 +1,5 @@
+
+--- stderr ---
+192.168.29.174:5555 refused the connection: nothing listens for ADB there, so network ADB is off or on another port.
+If the TV has Wireless debugging, pair the TV once with the stock adb (`adb pair`, then `adb connect` to the port its Wireless debugging screen shows) and run `adb tcpip 5555`. Port 5555 usually closes at the next reboot; `adb connect` and `adb tcpip 5555` open it again, with no new pairing. A firmware that runs adbd on a port of its own takes TV_HOST=<tv ip>:<port>.
+Not an Android TV (Samsung, LG, Roku)? There's no ADB to connect to; see https://cleanyour.tv/not-android. See docs/TROUBLESHOOTING.md#connecting.

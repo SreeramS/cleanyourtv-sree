@@ -1,0 +1,205 @@
+From a0ad63701b232141603f92b02f149f1c4658c7cb Mon Sep 17 00:00:00 2001
+From: Sreeram S <sreeram@users.noreply.github.com>
+Date: Tue, 17 Nov 2026 14:37:09 +0000
+Subject: [PATCH] launcher: repair a blank Home after a quick power off and on
+ (Realtek ASU, Sony BRAVIA VU2)
+
+The tuner's Automatic Service Update (com.realtek.dtv ASUService) opens its
+Digital Channel Setup screen at every power-off. A power-on within a second or
+two then restarts and resumes Home while its window is still invisible:
+
+- the refocus in reloadApps finds no laid-out tile, and the glass/hero fades it
+  starts stay at alpha 0 while the flags say shown;
+- the process can miss the display's ON event, after which every window in it
+  skips each draw (mLastPerformDrawFailedReason=screen_off), so recreate() does
+  not help and only a new process does.
+
+After each screen-on and window focus, Home now asks for one draw. If nothing
+is drawn while PowerManager.isInteractive(), it restarts its process (at most
+once a minute, logged as TvHome; Android relaunches the top Home). Otherwise it
+repairs stuck tiles and fades through the existing refocus path.
+
+Tested on a BRAVIA VU2 (UKR1.240726.001): quick power cycles, an app round
+trip, and quick power cycles after a restart.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01JNks2QG6pJ57GLCSB3q7K5
+---
+ docs/TROUBLESHOOTING.md                       | 14 +++
+ examples/sony-bravia-vu2/debloat.txt          |  3 +
+ .../java/com/gathin/tvhome/MainActivity.java  | 92 +++++++++++++++++++
+ 3 files changed, 109 insertions(+)
+
+diff --git a/docs/TROUBLESHOOTING.md b/docs/TROUBLESHOOTING.md
+index c6f4c193..d272a8c7 100644
+--- a/docs/TROUBLESHOOTING.md
++++ b/docs/TROUBLESHOOTING.md
+@@ -782,6 +782,20 @@ Things that bit us or contributors, so they don't bite you. Commands use `tools/
+   `.RecoveryActivity` on a Xiaomi MiTV-MOEU0 (`V816.0.26.10.12.1`), `set-home-activity` did not change it,
+   and after one reboot the TV never left the boot animation and only a factory reset brought it back
+   ([#3578](https://github.com/Gathin23/cleanyourtv/issues/3578)). Enable launcherx first, every time.
++- **Home comes back with no tiles, highlight or name after a quick power off and on** (Sony BRAVIA VU2,
++  Realtek `rtd2885m`, Android 14 `UKR1.240726.001`). The top bar and the empty dock band show; one arrow key
++  brings the tiles back but not the glass or the app name, and only a force-stop of `com.gathin.tvhome` brings
++  everything back. The tuner's Automatic Service Update (`com.realtek.dtv` `ASUService`) opens
++  `.DigitalSetup.DigitalChannelSetupActivity` at every power-off, so a power-on within a second or two restarts
++  and resumes Home while its window is still invisible behind that screen. Two things go wrong: the refocus in
++  `reloadApps` finds no laid-out tile and the fades it starts stay at alpha 0, and the launcher process can miss
++  the display's ON event, after which every window in it skips each draw
++  (`tools/tv.py "dumpsys activity top" | grep mLastPerformDrawFailedReason` says `screen_off` while the window is
++  focused and visible, `dumpsys gfxinfo com.gathin.tvhome` stops counting frames, the clock stops). `recreate()`
++  does not help, since the stale display state belongs to the process. The launcher now checks after each
++  screen-on and window focus that Home draws: if nothing is drawn while `PowerManager.isInteractive()`, it
++  restarts its process (once a minute at most, logged as `TvHome`), and otherwise repairs stuck fades and tiles.
++  Turning Automatic Service Update off avoids the trigger; the tuner itself must stay enabled.
+ - **Home worked for days, then went black after a power cut** (Acer R4G and Panasonic 4KTV-3MUP,
+   MOKA `R4_GTV`, Google TV 14): the firmware re-enables setupwraith at every cold boot and its
+   `.RecoveryActivity` takes Home. `logcat | grep RecoveryActivity` shows it starting several times a
+diff --git a/examples/sony-bravia-vu2/debloat.txt b/examples/sony-bravia-vu2/debloat.txt
+index fc077b14..6814a162 100644
+--- a/examples/sony-bravia-vu2/debloat.txt
++++ b/examples/sony-bravia-vu2/debloat.txt
+@@ -57,6 +57,9 @@
+ #   the authorisations revoked, tools/adb-closed.py reported 5555 refused after a reboot.
+ # - Remote: Home, Input, Netflix, YouTube, Prime Video, the Settings gear and the mic work with no key
+ #   helper, and a held Volume + still ramps. The TV boots straight into launcher/, not Live TV.
++# - Power: the tuner's Automatic Service Update opens its Digital Channel Setup screen at every power-off, and a
++#   quick power-on used to leave launcher/ blank (no tiles, glass or name; docs/TROUBLESHOOTING.md). Fixed in the
++#   launcher on a third unit (2026-11-17, same build): checked with quick power cycles, app round trips and a restart.
+ # - Status: applied 2026-10-31 on one TV in four batches with a screenshot after each, and rebooted
+ #   once with every entry still disabled. Not yet lived with for several days.
+ 
+diff --git a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+index eccf73fe..d291fe12 100644
+--- a/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
++++ b/launcher/app/src/main/java/com/gathin/tvhome/MainActivity.java
+@@ -334,6 +334,84 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     private PopupWindow openPopup;
+     /** Reorder mode is on (top-bar button). */
+     private boolean reordering;
++    /**
++     * Repairs a Home that came back without its tiles, highlight or name. Seen on a Sony BRAVIA VU2 (Realtek,
++     * Android 14): its tuner (com.realtek.dtv ASUService) opens its channel setup at every power-off, so a quick
++     * power-on restarts and resumes Home while its window is still invisible behind that screen. The refocus in
++     * reloadApps then finds no laid-out tile, the entrance animation never gets a frame, and nothing retries.
++     * Worse, the process can miss the display's ON event in that quick off-and-on: every ViewRootImpl in it then
++     * still believes the display is off and skips each draw (dumpsys activity top shows
++     * mLastPerformDrawFailedReason=screen_off with the window focused and visible; no frames, not even the clock).
++     * The stale state is the process's, so recreate() does not help and a new process does. So first check that
++     * Home draws at all, and restart the process (Android relaunches the top Home at once) if it does not.
++     * Run once Home has had window focus for a moment, and after the screen turns on: only a stuck state is touched.
++     */
++    private final Runnable repairIfStuck = this::checkDrawing;
++    private final Runnable verifyDrawing = this::verifyDrawingNow;
++    /** Set by drawWatch when the window really draws a frame. */
++    private boolean drewSinceCheck;
++    private final ViewTreeObserver.OnDrawListener drawWatch = () -> drewSinceCheck = true;
++    private final BroadcastReceiver screenOnReceiver = new BroadcastReceiver() {
++        @Override
++        public void onReceive(Context context, Intent intent) {
++            root.removeCallbacks(repairIfStuck);
++            root.postDelayed(repairIfStuck, 1000);
++        }
++    };
++
++    private void checkDrawing() {
++        if (!resumed || !hasWindowFocus()) return;
++        drewSinceCheck = false;
++        root.invalidate();
++        root.removeCallbacks(verifyDrawing);
++        root.postDelayed(verifyDrawing, 600);
++    }
++
++    private void verifyDrawingNow() {
++        if (!resumed || !hasWindowFocus()) return;
++        if (!drewSinceCheck) {
++            // Ask the power service, not this process's Display: that cached state is the one gone stale.
++            android.os.PowerManager pm = getSystemService(android.os.PowerManager.class);
++            android.content.SharedPreferences prefs = getSharedPreferences("draw_watch", MODE_PRIVATE);
++            long now = android.os.SystemClock.elapsedRealtime();
++            long last = prefs.getLong("restart_at", 0);
++            // elapsedRealtime restarts at boot: a stored time ahead of now is from before it.
++            boolean recently = last != 0 && last <= now && now - last < 60_000;
++            if (pm != null && pm.isInteractive() && !recently) {
++                android.util.Log.w("TvHome", "Home drew nothing with the screen on; restarting the launcher process");
++                prefs.edit().putLong("restart_at", now).commit();   // commit: the process ends on the next line
++                android.os.Process.killProcess(android.os.Process.myPid());
++                return;
++            }
++            android.util.Log.w("TvHome", "Home drew nothing; interactive=" + (pm != null && pm.isInteractive())
++                    + " recentRestart=" + recently);
++        }
++        repairIfStuckNow();
++    }
++
++    private void repairIfStuckNow() {
++        if (!resumed || !hasWindowFocus() || reordering || appLibrary != null || openPopup != null
++                || adapter.appCount() == 0) return;
++        boolean tilesStuck = false;
++        for (int i = 0; i < grid.getChildCount(); i++) {
++            android.view.animation.Animation a = grid.getChildAt(i).getAnimation();
++            if (a != null && !a.hasEnded()) {
++                tilesStuck = true;
++                break;
++            }
++        }
++        View focused = getCurrentFocus();
++        boolean onTile = focused != null && focused.getId() == R.id.card;
++        boolean stuck = tilesStuck || focused == null || (onTile && !glassShown)
++                || (glassShown && glass.getAlpha() < 0.99f) || (heroShown && hero.getAlpha() < 0.99f);
++        if (!stuck) return;
++        android.util.Log.i("TvHome", "repairing Home: tiles=" + tilesStuck + " focus=" + (focused != null)
++                + " glass=" + glassShown + "/" + glass.getAlpha() + " hero=" + heroShown + "/" + hero.getAlpha());
++        for (int i = 0; i < grid.getChildCount(); i++) grid.getChildAt(i).clearAnimation();
++        grid.invalidate();
++        // The same tiles: focus goes back to the last tile and the glass, name and glow fade in, with no entrance.
++        reloadApps(true, false, false);
++    }
+     /** Key of the tile being carried in reorder mode, or null. */
+     private String movingKey;
+     /** Tile order when reorder mode started, to save only when something moved. */
+@@ -935,6 +1013,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+         // Hide the glass when focus leaves the tiles.
+         // Taken off in onDestroy: recreate() keeps the window, and a listener left on it held every earlier Home.
+         getWindow().getDecorView().getViewTreeObserver().addOnGlobalFocusChangeListener(glassFocusListener);
++        getWindow().getDecorView().getViewTreeObserver().addOnDrawListener(drawWatch);
++        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
++            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON), Context.RECEIVER_NOT_EXPORTED);
++        } else {
++            registerReceiver(screenOnReceiver, new IntentFilter(Intent.ACTION_SCREEN_ON));
++        }
+ 
+         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+@@ -1307,6 +1391,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     protected void onPause() {
+         super.onPause();
+         resumed = false;
++        root.removeCallbacks(repairIfStuck);
++        root.removeCallbacks(verifyDrawing);
+         // No UP reaches a paused Home, so a vendor-key hold it saw go down would still open its app later.
+         // Only Home's own share is dropped: a key service that saw the same DOWN keeps its hold.
+         RemoteKeys.release(this);
+@@ -1369,6 +1455,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+     public void onWindowFocusChanged(boolean hasFocus) {
+         super.onWindowFocusChanged(hasFocus);
+         if (hasFocus) {
++            root.removeCallbacks(repairIfStuck);
++            root.postDelayed(repairIfStuck, 700);
+             startPendingSettingsReorder();
+             if (libraryFocusPending && appLibrary == null) focusLibrary();
+             showCardPrompt();
+@@ -1388,6 +1476,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
+         super.onDestroy();
+         ViewTreeObserver tree = getWindow().getDecorView().getViewTreeObserver();
+         if (tree.isAlive()) tree.removeOnGlobalFocusChangeListener(glassFocusListener);
++        if (tree.isAlive()) tree.removeOnDrawListener(drawWatch);
++        unregisterReceiver(screenOnReceiver);
++        root.removeCallbacks(repairIfStuck);
++        root.removeCallbacks(verifyDrawing);
+         RemoteKeys.release(this);
+         cancelHoldOk();
+         if (gameDay != null) gameDay.shutdown();
+-- 
+2.43.0
+

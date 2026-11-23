@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "--screenshot", "../tvwork/shots/22-right.png", "DPAD_RIGHT", "--wait", "2"], "timeout": 60}

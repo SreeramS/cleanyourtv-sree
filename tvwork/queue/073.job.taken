@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "logcat -b events -d | grep -E \"wm_set_resumed|screen_toggled|wm_on_paused|wm_on_resume|wm_on_top_resumed\" | tail -14; dumpsys window | grep -m1 mCurrentFocus"], "timeout": 60}

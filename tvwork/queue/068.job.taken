@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "logcat -d -b crash | tail -40; echo ---; dumpsys window | grep -m2 -E \"mCurrentFocus|mFocusedApp\"; pidof com.gathin.tvhome; logcat -b events -d | grep -E \"am_crash|am_anr|wm_set_resumed\" | tail -6"], "timeout": 60}

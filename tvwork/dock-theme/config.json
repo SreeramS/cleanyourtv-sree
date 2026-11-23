@@ -1,0 +1,5 @@
+{
+  "dock_apps": ["com.google.android.youtube.tv", "com.graymatrix.did", "in.startv.hotstar", "com.netflix.ninja", "com.amazon.amazonvideo.livingroom"],
+  "columns": 5,
+  "glass_style": "green-glass"
+}

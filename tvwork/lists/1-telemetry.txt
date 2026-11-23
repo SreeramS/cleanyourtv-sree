@@ -1,0 +1,6 @@
+# Sony BRAVIA VU2, Android 14 (UKR1.240726.001) - batch 1: telemetry, attribution, retail demo
+# Undo: TV_HOST=<tv ip> tools/restore.sh ../tvwork/lists/1-telemetry.txt
+com.google.android.feedback              # Google feedback reporter
+com.google.android.partnersetup          # partner install attribution
+com.google.android.onetimeinitializer    # runs once after first setup
+com.sony.dtv.multiscreendemo             # retail demo mode

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys activity top | grep -A2000 \"ACTIVITY com.gathin.tvhome\" | grep -E \"ViewRoot:|mDisplayState|mStopped|mIsDrawing|mWillDrawSoon|mFirst|mAppVisible|mPausedForTransition|mLastWasImTarget|mTraversalScheduled\" | head -20"], "timeout": 60}

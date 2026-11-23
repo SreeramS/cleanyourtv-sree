@@ -1,0 +1,10 @@
+Total frames rendered: 38
+Failed to write while dumping service gfxinfo: Broken pipe
+Status: ok
+LaunchState: UNKNOWN (0)
+Total frames rendered: 38
+Failed to write while dumping service gfxinfo: Broken pipe
+Display States: size=1
+  Display State=ON
+    mState=ON
+Failed to write while dumping service display: Broken pipe

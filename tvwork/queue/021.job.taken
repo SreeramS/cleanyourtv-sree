@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "settings put global private_dns_specifier dns.adguard-dns.com"], "timeout": 30}

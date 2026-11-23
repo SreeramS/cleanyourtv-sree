@@ -1,0 +1,13 @@
+  mCurrentFocus=Window{35b0c37 u0 com.gathin.tvhome/com.gathin.tvhome.MainActivity}
+Failed to write while dumping service window: Broken pipe
+      FragmentManager misc state:
+              android.widget.ImageView{27ac864 G.ED..... ......ID 0,0-0,0 #7f090057 app:id/heroArt}
+              android.view.View{8adfacd V.ED..... ......ID 0,0-1920,1080 #7f090027 app:id/ambient}
+              android.view.View{efcb685 G.ED..... ......I. 0,0-0,0 #7f09005b app:id/heroScrim}
+              android.widget.LinearLayout{1146cda V.E...... ......ID 136,0-484,121 #7f090056 app:id/hero}
+                android.widget.TextView{978f50b V.ED..... ......ID 0,0-348,121 #7f09005a app:id/heroName}
+                android.widget.TextView{4abdfe8 G.ED..... ......I. 0,0-0,0 #7f090059 app:id/heroMeta}
+                android.widget.LinearLayout{d73601 G.E...... ......I. 0,0-0,0 #7f090058 app:id/heroDots}
+                    android.widget.TextView{98b1318 VFED..C.. ......ID 20,0-238,84 #7f09002f app:id/btnInputs}
+                    android.widget.TextView{c98a171 VFED..CL. ......ID 258,0-510,84 #7f090037 app:id/btnWifi}
+                    android.widget.TextView{b44e3ad VFED..CL. ......ID 530,0-773,84 #7f090034 app:id/btnSettings}

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "dumpsys activity top | grep -A6 \"Local Activity\" | head -8; dumpsys activity activities | grep -A40 \"Hist.*com.gathin.tvhome\" | grep -m6 -E \"state=|stopped|nowVisible|visibleRequested|mVisibleRequested|isSleeping|sleeping\"; dumpsys window | grep -m3 -E \"mSleepTokens|keyguard|mDreamingLockscreen|isSleeping|mAwake\""], "timeout": 60}

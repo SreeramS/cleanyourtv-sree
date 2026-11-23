@@ -1,0 +1,13 @@
+11-17 19:57:27.483 I/am_proc_start(  828): [0,3297,10042,com.gathin.tvhome,top-activity,{com.gathin.tvhome/com.gathin.tvhome.MainActivity}]
+11-17 19:57:27.962 I/wm_on_create_called( 3297): [238780940,com.gathin.tvhome.MainActivity,performCreate,190]
+11-17 19:57:29.051 I/am_proc_start(  828): [0,3470,10042,com.gathin.tvhome,top-activity,{com.gathin.tvhome/com.gathin.tvhome.MainActivity}]
+11-17 19:57:29.326 I/wm_on_create_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performCreate,115]
+11-17 19:57:39.760 I/power_sleep_requested(  828): 0
+11-17 19:57:40.347 I/screen_toggled(  828): 0
+11-17 19:57:40.889 I/screen_toggled(  828): 1
+11-17 19:57:40.906 I/wm_set_resumed_activity(  828): [0,com.realtek.dtv/.DigitalSetup.DigitalChannelSetupActivity,resumeTopActivity - onActivityStateChanged]
+11-17 19:57:42.570 I/wm_on_create_called( 3470): [195776320,com.gathin.tvhome.MainActivity,performCreate,35]
+Total frames rendered: 45
+Failed to write while dumping service gfxinfo: Broken pipe
+Total frames rendered: 45
+Failed to write while dumping service gfxinfo: Broken pipe

@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "--screenshot", "../tvwork/shots/02-after-batch2.png", "HOME", "--wait", "3"], "timeout": 60}

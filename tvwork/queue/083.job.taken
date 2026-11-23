@@ -1,0 +1,1 @@
+{"argv": ["tv.py", "p=$(pidof com.gathin.tvhome); dumpsys activity processes | grep -A12 \"ProcessRecord{.*$p:com.gathin.tvhome\" | grep -m8 -E \"oom|curProcState|setAdj|Frozen|frozen|freeze|procState\"; cat /proc/$p/cgroup 2>/dev/null | head -3; dumpsys activity | grep -i -m3 \"freezer\""], "timeout": 60}

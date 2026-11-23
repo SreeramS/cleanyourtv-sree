@@ -1,0 +1,34 @@
+recorded 7 packages on 192.168.29.174 (0 already disabled, left alone by undo) -> /Users/sreerams/.cleanyourtv/recovery-192.168.29.174-964dc1f3.json
+HOME before: com.google.android.tvlauncher/.MainActivity
+undo with tools/restore.sh <same list>; keep this file, it is the only copy.
+$ pm disable-user --user 0 com.google.android.youtube.tvmusic
+Package com.google.android.youtube.tvmusic new state: disabled-user
+$ pm disable-user --user 0 com.apple.atve.androidtv.appletv
+Package com.apple.atve.androidtv.appletv new state: disabled-user
+$ pm disable-user --user 0 com.suntv.sunnxt
+Package com.suntv.sunnxt new state: disabled-user
+$ pm disable-user --user 0 com.jio.media.jiotvplus
+Package com.jio.media.jiotvplus new state: disabled-user
+$ pm disable-user --user 0 com.prasarbharati.bharat.ott
+Package com.prasarbharati.bharat.ott new state: disabled-user
+$ pm disable-user --user 0 com.google.android.videos
+Package com.google.android.videos new state: disabled-user
+$ pm list packages -d
+package:com.apple.atve.androidtv.appletv
+package:com.suntv.sunnxt
+package:com.google.android.syncadapters.calendar
+package:com.google.android.youtube.tvmusic
+package:com.android.providers.calendar
+package:com.prasarbharati.bharat.ott
+package:com.google.android.videos
+package:com.sony.dtv.multiscreendemo
+package:com.google.android.feedback
+package:com.sony.dtv.ecodashboard
+package:com.android.wallpaper.livepicker
+package:com.sony.dtv.b2b.vendorprotocol
+package:com.android.camera2
+package:com.google.android.partnersetup
+package:com.jio.media.jiotvplus
+package:com.google.android.onetimeinitializer
+package:com.android.printspooler
+package:com.android.gallery3d
